@@ -1,41 +1,42 @@
 {
     "basic": {
-      "domain": "Calligra.dev",
-      "name": "Mohammad Ghalambaz",
-      "job": "Senior Software Engineer \n Symfony Framework Specialist \n PHP Architecture & Cloud Solutions",
-      "summary": "",
-      "summary_extra": "",
+      "domain": "smyr.dev",
+      "name": "Samyar Rahimi",
+      "job": "Software Engineer and Architect \n Startup Founder \n Fitness Coach",
+      "availability": "Available for collaboration",
+      "summary": "I'm a passionate Software Engineer with a decade of experience in building beautiful, intuitive, and performant applications. When I'm not coding, I enjoy exploring the great outdoors, experimenting with new recipes in the kitchen, and capturing moments through photography.",
+      "summary_extra": "This space is where I share my professional journey, technical insights, and personal creative projects. Welcome!",
       "cv_file_name": ""
     },
     "socialLinks": [
         {
             "name": "GitHub",
             "icon": "github",
-            "link": "https://github.com/ghalambaz",
+            "link": "https://github.com/smyrdev",
             "color": "#24292e"
         },
         {
             "name": "LinkedIn",
             "icon": "linkedin",
-            "link": "https://www.linkedin.com/in/ghalambaz",
+            "link": "https://www.linkedin.com/in/samyarahimi/",
             "color": "#0077b5"
         },
         {
             "name": "dev.to",
             "icon": "devto",
-            "link": "https://dev.to/ghalambaz",
+            "link": "https://dev.to",
             "color": "#0a0a0a"
         },
         {
             "name": "Hashnode",
             "icon": "hashnode",
-            "link": "https://hashnode.com/@ghalambaz",
+            "link": "https://hashnode.com",
             "color": "#2962ff"
         },
         {
             "name": "Medium",
             "icon": "medium",
-            "link": "https://medium.com/@calligra",
+            "link": "https://medium.com",
             "color": "#00ab6c"
         }
     ],

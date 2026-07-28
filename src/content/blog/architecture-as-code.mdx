@@ -1,0 +1,53 @@
+---
+title: 'Architecture as Code'
+description: ''
+category: Architecture
+type: concept
+time_to_read: 4
+level: Beginner
+tags:
+  - software design
+  - software architecture
+datetime: '2026-06-19T11:51:19.277Z'
+image: /images/blog/architecture-as-code/cover.jpg
+---
+
+
+The traditional approach to software design is to first draw the 
+architecture diagram and then implement the system based on it. However, 
+this isn’t always ideal: the implemented code may not fully match the 
+diagram, and it’s hard to keep them aligned over time. Instead, we can 
+take a “code-first” approach that avoids these drawbacks. Let’s look at 
+the benefits of Architecture as Code (AaC).
+
+# Benefits
+
+## 1. Define it in code
+
+One of the key benefits of Architecture as Code is that you define the architecture directly in your code. **Architecture and code aren’t separate—they belong together and should live together.**
+ Imagine “coding” your diagram: it becomes part of the codebase, always 
+available and kept up to date. Many additional benefits follow from this, 
+which we’ll explore later.
+
+## 2. Version control your architecture
+
+Another major benefit of AaC is that you can version your architecture and 
+track when, why, and how it changed over time. **Remember**, *architecture is evolutionary—it won’t just emerge*.
+
+## 3. Write tests for it
+
+AaC also makes it easier to write tests for your architecture. Yes—you read that correctly: **tests.** Writing architectural tests has many benefits. One is that you can **assert that the code follows the defined architecture.** Another is that you **fail fast**, which is incredibly valuable. Finally, these tests can **start conversations** about architectural decisions.
+
+## 4. Visualize
+
+And of course, there’s visualization. In the end, we all want to visualize 
+the architecture to confirm components are logically connected—and to 
+present it to business stakeholders. I won’t go deeper into visualization here.
+
+## 5. Feed it into an LLM
+
+The last benefit—one that has become more important in recent years—is that 
+you can feed your architecture into an **LLM**. This unlocks many possibilities. 
+Imagine how many questions you could ask an LLM about your architecture.
+
+In the next posts, we’ll discuss how to define your architecture as code in practice.

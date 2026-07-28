@@ -6,7 +6,7 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://calligra.dev',
+  site: 'https://smyr.dev',
   base: '/',
   build: {
       emptyOutDir: false,

@@ -1,68 +1,76 @@
-# README.md
+# 🖋️ smyr.dev
 
-# 🖋️ Calligra Astro Template
+My personal website and blog, where I write about software, work, and everything in between. Live at **[smyr.dev](https://smyr.dev)**.
 
-A free, open-source static site template and deployment toolkit designed for developers who want to own their content. Built on top of the excellent **Astro Resume Theme**, Calligra includes pre-configured automation scripts and tutorials to help you **write once and publish to multiple destinations** effortlessly.
+It's a fast, static site with a content pipeline that lets me **write once and publish to multiple destinations** (Notion → this blog + Dev.to + Hashnode + Medium).
 
-This repository powers the live production site at [calligra.dev](https://calligra.dev).
+> Built on top of **[Calligra](https://github.com/ghalambaz/Calligra)** by [@ghalambaz](https://github.com/ghalambaz), which was my main inspiration and starting point. Calligra itself extends the excellent [Astro Resume Theme](https://github.com/wasutz/astro-resume-theme) by Wasut Panyawiphat. Huge thanks to both.
 
 ---
 
 ## 🚀 Features
 
-- **Write Once, Publish Anywhere:** Automation workflows for syncing content from Notion and cross-posting Markdown articles to Medium, Dev.to, and Hashnode.
-- **Modern Stack:** Built with [Astro](https://astro.build/) for ultimate speed and styled with [Tailwind CSS](https://tailwindcss.com/) for easy customization.
-- **Enhanced Blog Engine:** Extended from the base theme to include native Search, Categories, and Tags, plus a dynamic homepage widget showcasing your latest posts.
-- **Performance First:** Lightweight architecture delivering outstanding Lighthouse/PageSpeed scores, fully responsive layouts, and built-in SEO optimization.
-- **Dark Mode:** Seamless light/dark mode transition out of the box.
+- **Write once, publish anywhere:** Automation for syncing content from Notion and cross-posting Markdown articles to Medium, Dev.to, and Hashnode.
+- **Modern stack:** Built with [Astro](https://astro.build/) for speed and styled with [Tailwind CSS](https://tailwindcss.com/) for easy customization.
+- **Blog engine:** Native search, categories, and tags, plus a homepage widget showcasing the latest posts.
+- **Performance first:** Lightweight architecture with strong Lighthouse/PageSpeed scores, responsive layouts, and built-in SEO.
+- **Dark mode:** Seamless light/dark theme out of the box.
 
 ---
-## 🚀 Deployment & Compatibility Status
+
+## 📦 Deployment & Compatibility Status
+
 | Platform | Status | Notes |
 | :--- | :--- | :--- |
 | Astro (local) | ✅ Native | Fully supported |
 | Dev.to | ✅ Compatible | Verified complete compatibility |
-| Medium | ⚠️ Issues | "Importer struggles with <blockquote>, <code>, and <pre> tags" |
+| Medium | ⚠️ Issues | Importer struggles with `<blockquote>`, `<code>`, and `<pre>` tags |
 | Hashnode | ⏳ Pending | Awaiting testing; markdown generation only |
 
 ---
+
 ## 🛠️ Getting Started
 
 ### Prerequisites
 
-This project uses `bun` as its primary package manager, though you can substitute it with `npm`, `pnpm`, or `yarn`.
+This project uses `bun` as its primary package manager, though you can substitute `npm`, `pnpm`, or `yarn`.
 
 ### Installation
 
 1. **Clone the repository:**
    ```bash
-   git clone [https://github.com/ghalambaz/Calligra](https://github.com/ghalambaz/Calligra)
-   cd Calligra
+   git clone https://github.com/smyrdev/smyr.dev.git
+   cd smyr.dev
    ```
 2. **Install dependencies:**
    ```bash
    bun install
    ```
-3. **Install dependencies:**
+3. **Start the dev server:**
    ```bash
    bun run dev
    ```
+
 Open http://localhost:4321 in your browser to view the site.
+
+---
 
 ## 🧞 Commands
 
 | Make | Action |
 | :--- | :--- |
-| `make run` | Starts local dev server at `localhost:4321`|
-| `make build` | build your production site, put content to the output directory |
+| `make run` | Starts local dev server at `localhost:4321` |
+| `make build` | Build your production site into the output directory |
 | `make sync` | Pull content from Notion and generate Markdown posts |
-| `make deploy` | Push your production content to the remote repo (github pages) |
+| `make deploy` | Push your production content to the remote repo (GitHub Pages) |
 
-# Content Sync and Publishing Automation
+---
+
+## Content Sync and Publishing Automation
 
 The project includes a Notion sync command and a set of make targets for publishing posts to external platforms.
 
-## Command Table
+### Command Table
 
 | Command | Description | Required Arguments | Status |
 | :--- | :--- | :--- | :--- |
@@ -74,16 +82,19 @@ The project includes a Notion sync command and a set of make targets for publish
 | `make hash-reset` | Reset cache hash for one specific post. | `slug` | Ready |
 | `make hash-reset-all` | Reset cache hashes for all posts. | None | Ready |
 
-## Notes
+### Notes
 
 `make sync` reads `NOTION_TOKEN` and `NOTION_DATABASE_ID` from your environment before generating posts.
 
-`make publish` and the other publishing targets are available now through the `bin/publish` script.
+`make publish` and the other publishing targets are available through the `bin/publish` script.
 
-⚖️ License & Acknowledgments
+---
 
-- **Source Code:** The source code of this website is licensed under the [MIT License](LICENSE).
-- **Content & Articles:** All written content, articles, and media found under the `src/content/` directory are licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)](src/content/LICENSE-CONTENT)
+## ⚖️ License & Acknowledgments
 
-## Credits
-Calligra is built as an extended variant of the astro-resume-theme created by Wasut Panyawiphat, which is also distributed under the MIT License. I am incredibly grateful for their foundational work.
+- **Source Code:** Licensed under the [MIT License](LICENSE).
+- **Content & Articles:** All written content, articles, and media under `src/content/` are licensed under [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)](src/content/LICENSE-CONTENT).
+
+### Credits
+
+This site is built on **[Calligra](https://github.com/ghalambaz/Calligra)** by [@ghalambaz](https://github.com/ghalambaz), which served as the main inspiration and foundation. Calligra is itself an extended variant of the [astro-resume-theme](https://github.com/wasutz/astro-resume-theme) created by Wasut Panyawiphat. Both are distributed under the MIT License, and I'm grateful for their work.
