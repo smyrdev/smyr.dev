@@ -1,0 +1,77 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import SectionHeader from '../../components/common/SectionHeader.astro';
+import WorkRow from '../../components/sections/works/WorkRow.astro';
+import ContactBand from '../../components/sections/ContactBand.astro';
+
+const works = (await getCollection('works'))
+  .sort((a, b) => a.data.order - b.data.order);
+
+const types = [...new Set(works.map(w => w.data.type))];
+---
+
+<Layout
+  title="Works"
+  description="Products, open source and architecture case studies by Samyar Rahimi."
+>
+  <SectionHeader
+    number="01"
+    title="Works"
+    size="lg"
+    note={`${works.length} ${works.length === 1 ? 'entry' : 'entries'}`}
+  />
+
+  <div class="intro gutter">
+    <p>
+      Things I have built and the reasoning behind them — products I founded,
+      open source I maintain, and case studies written up as problem → approach
+      → outcome.
+    </p>
+    <div class="types">
+      {types.map(type => <span class="type-chip">{type}</span>)}
+    </div>
+  </div>
+
+  <div class="rows">
+    {works.map((work, i) => <WorkRow work={work} index={i} />)}
+  </div>
+
+  <ContactBand number="02" heading="Want one of these for your team?" />
+</Layout>
+
+<style>
+.intro {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding-top: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.intro p {
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--color-text-offset);
+  max-width: 56ch;
+}
+
+.types {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.type-chip {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 1px solid var(--color-border);
+  padding: 3px 8px;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+</style>

@@ -1,0 +1,198 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SectionHeader from '../components/common/SectionHeader.astro';
+import { basic, socialLinks } from '../config/cv.json';
+
+const good = [
+  {
+    number: '01',
+    title: 'Architecture review',
+    body: `You have a system that works and a team that is scared of it. I read
+      the code, map what is actually there, and write down where the boundaries
+      should go.`,
+  },
+  {
+    number: '02',
+    title: 'Getting a product out',
+    body: `Early-stage build where the constraint is judgement, not headcount —
+      what to make explicit now and what to leave rough until it earns the
+      attention.`,
+  },
+  {
+    number: '03',
+    title: 'A second opinion',
+    body: `A decision that is hard to reverse and nobody senior to argue it
+      against. Short engagement, blunt answer.`,
+  },
+];
+---
+
+<Layout
+  title="Contact"
+  description={`Get in touch with ${basic.name} — ${basic.email}.`}
+>
+  <SectionHeader number="01" title="Contact" size="lg" note="usually replies within a day or two" />
+
+  <section class="lead gutter">
+    <h1 class="lead-headline">Let's talk architecture</h1>
+    <p class="lead-body">
+      Email is best and reaches me directly — no form, no funnel. Tell me what
+      the system does, what it is doing badly, and what you have already tried.
+      That is enough for a useful first reply.
+    </p>
+
+    <a href={`mailto:${basic.email}`} class="mail-btn">{basic.email} ↗</a>
+  </section>
+
+  <SectionHeader number="02" title="Good reasons to write" size="sm" />
+
+  <div class="reasons hairline-grid">
+    {good.map(item => (
+      <article class="reason">
+        <span class="reason-number">{item.number}</span>
+        <h2 class="reason-title">{item.title}</h2>
+        <p class="reason-body">{item.body}</p>
+      </article>
+    ))}
+  </div>
+
+  <SectionHeader number="03" title="Elsewhere" size="sm" />
+
+  <div class="elsewhere hairline-grid">
+    {socialLinks.map(social => (
+      <a href={social.link} class="social" target="_blank" rel="noopener noreferrer">
+        <span>{social.name}</span>
+        <span class="social-arrow" aria-hidden="true">↗</span>
+      </a>
+    ))}
+  </div>
+</Layout>
+
+<style>
+.lead {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-top: 44px;
+  padding-bottom: 44px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.lead-headline {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 5.4vw, 56px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  text-transform: uppercase;
+}
+
+.lead-body {
+  font-size: 14px;
+  line-height: 1.85;
+  color: var(--color-text-offset);
+  max-width: 60ch;
+}
+
+.mail-btn {
+  align-self: flex-start;
+  padding: 16px 26px;
+  background: var(--color-primary);
+  color: #ffffff;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: transform 0.15s ease;
+}
+
+.mail-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* ── Reasons ── */
+.reasons {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-bottom: 1px solid var(--color-border);
+}
+
+.reason {
+  background: var(--color-background);
+  padding: 26px var(--page-gutter);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.reason:hover {
+  background: var(--color-invert-bg);
+  color: var(--color-invert-text);
+}
+
+.reason-number {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--color-primary);
+}
+
+.reason-title {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+
+.reason-body {
+  font-size: 13px;
+  line-height: 1.75;
+  color: var(--color-text-offset);
+}
+
+.reason:hover .reason-body {
+  color: color-mix(in srgb, var(--color-invert-text) 72%, transparent);
+}
+
+/* ── Elsewhere ── */
+.elsewhere {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  border-bottom: 1px solid var(--color-border);
+}
+
+.social {
+  background: var(--color-background);
+  padding: 18px var(--page-gutter);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.social:hover {
+  background: var(--color-invert-bg);
+  color: var(--color-invert-text);
+}
+
+.social-arrow {
+  color: var(--color-primary);
+}
+
+@media (max-width: 900px) {
+  .reasons {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .mail-btn {
+    align-self: stretch;
+    text-align: center;
+  }
+}
+</style>

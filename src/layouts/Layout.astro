@@ -1,26 +1,39 @@
 ---
 import Header from '../components/layouts/Header.astro';
 import Footer from '../components/layouts/Footer.astro';
+import { basic } from '../config/cv.json';
 
 import '../styles/index.css';
 
 interface Props {
 	title: string;
+	description?: string;
 }
 
-const { title } = Astro.props;
+const { title, description } = Astro.props;
+
+const pageTitle = title === basic.domain ? title : `${title} — ${basic.domain}`;
+const pageDescription = description ?? basic.summary;
 ---
 
 <!doctype html>
 <html lang="en" class="h-full" data-theme="light">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="description" content="Astro description" />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="description" content={pageDescription} />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="sitemap" href="/sitemap-index.xml" />
 		<meta name="generator" content={Astro.generator} />
-		<title>{title}</title>
+		<title>{pageTitle}</title>
+
+		<!-- Archivo for display, JetBrains Mono for everything else -->
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Archivo:wght@400..900&display=swap"
+			rel="stylesheet"
+		/>
 
 		<!-- initialize theme -->
 		<script is:inline>
@@ -45,12 +58,37 @@ const { title } = Astro.props;
 				});
 		</script>
 	</head>
-	<body class="h-full flex flex-col overflow-x-hidden bg-default
-		text-default text-base selection:bg-secondary">
-		<Header />
-		<section class="flex-grow">
-			<slot />
-		</section>
-		<Footer />
+	<body class="h-full overflow-x-hidden">
+		<div class="page-shell">
+			<Header />
+			<main>
+				<slot />
+			</main>
+			<div class="shell-filler" aria-hidden="true"></div>
+			<Footer />
+		</div>
 	</body>
 </html>
+
+<style>
+	.page-shell {
+		display: flex;
+		flex-direction: column;
+		min-height: 100%;
+	}
+
+	main {
+		flex: 0 0 auto;
+	}
+
+	/* Short pages: take up the slack with the same graph paper the hero
+	   panel uses, so the space below the last section reads as designed
+	   rather than as a page that ran out. */
+	.shell-filler {
+		flex: 1 0 auto;
+		background-image:
+			linear-gradient(var(--color-grid) 1px, transparent 1px),
+			linear-gradient(90deg, var(--color-grid) 1px, transparent 1px);
+		background-size: 40px 40px;
+	}
+</style>

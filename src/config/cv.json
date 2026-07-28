@@ -2,11 +2,16 @@
     "basic": {
       "domain": "smyr.dev",
       "name": "Samyar Rahimi",
-      "job": "Software Engineer and Architect \n Startup Founder \n Fitness Coach",
-      "availability": "Available for collaboration",
-      "summary": "I'm a passionate Software Engineer with a decade of experience in building beautiful, intuitive, and performant applications. When I'm not coding, I enjoy exploring the great outdoors, experimenting with new recipes in the kitchen, and capturing moments through photography.",
-      "summary_extra": "This space is where I share my professional journey, technical insights, and personal creative projects. Welcome!",
-      "cv_file_name": ""
+      "email": "hello@smyr.dev",
+      "role": "Software Engineer & Architect",
+      "headline": ["Software", "engineer &", "architect"],
+      "tagline": "I build systems and the products on top of them.",
+      "summary": "I build systems and the products on top of them. Ten years of shipping; most of it spent making architecture explicit, testable, and boring in the good way. I write about it here.",
+      "roles": [
+        { "label": "engineer", "accent": true },
+        { "label": "architect", "accent": true },
+        { "label": "founder", "accent": false }
+      ]
     },
     "socialLinks": [
         {
@@ -40,11 +45,21 @@
             "color": "#00ab6c"
         }
     ],
+    "syndication": ["dev.to", "hashnode", "medium"],
     "experiences": [],
     "education": [],
     "projects": [],
     "menuItems": [
-        { "name": "About", "link": "/" },
-        { "name": "Blog", "link": "/blog" }
+        { "name": "Blog", "link": "/blog" },
+        { "name": "Works", "link": "/works" },
+        { "name": "About", "link": "/about" },
+        { "name": "Now", "link": "/now" }
+    ],
+    "footerItems": [
+        { "name": "Blog", "link": "/blog" },
+        { "name": "Works", "link": "/works" },
+        { "name": "About", "link": "/about" },
+        { "name": "Now", "link": "/now" },
+        { "name": "Contact", "link": "/contact" }
     ]
 }

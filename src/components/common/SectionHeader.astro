@@ -1,0 +1,117 @@
+---
+interface Props {
+  /** Two-digit section number — 01 through 04 down the page. */
+  number: string;
+  title: string;
+  /** 'lg' is the leading section on a page, 'sm' the compact ones under it. */
+  size?: 'lg' | 'sm';
+  /** Small grey note beside the title, e.g. "3 entries". */
+  note?: string;
+  linkHref?: string;
+  linkLabel?: string;
+  /** Fill the bar with the offset background. */
+  offset?: boolean;
+  id?: string;
+}
+
+const {
+  number,
+  title,
+  size = 'lg',
+  note,
+  linkHref,
+  linkLabel,
+  offset = false,
+  id,
+} = Astro.props;
+---
+
+<div id={id} class:list={['section-header', 'gutter', size, { offset }]}>
+  <div class="left">
+    <span class="number">{number} /</span>
+    <h2 class="title">{title}</h2>
+    {note && <span class="note">{note}</span>}
+  </div>
+
+  {linkHref && linkLabel && (
+    <a href={linkHref} class="section-link">{linkLabel}</a>
+  )}
+</div>
+
+<style>
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.section-header.lg {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.section-header.sm {
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.section-header.offset {
+  background: var(--color-background-offset);
+}
+
+.left {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  min-width: 0;
+}
+
+.number {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.lg .title {
+  font-size: 22px;
+  letter-spacing: -0.02em;
+}
+
+.sm .title {
+  font-size: 16px;
+  letter-spacing: -0.01em;
+}
+
+.note {
+  font-size: 11px;
+  color: var(--color-text-nav);
+  white-space: nowrap;
+}
+
+.section-link {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  white-space: nowrap;
+  transition: opacity 0.15s ease;
+}
+
+.section-link:hover {
+  opacity: 0.7;
+}
+
+@media (max-width: 520px) {
+  .left { gap: 10px; }
+  .note { display: none; }
+}
+</style>

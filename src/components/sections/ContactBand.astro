@@ -1,0 +1,91 @@
+---
+import { basic } from '../../config/cv.json';
+
+interface Props {
+  number?: string;
+  heading?: string;
+}
+
+const { number = '04', heading = "Let's talk architecture" } = Astro.props;
+---
+
+<section class="contact-band gutter">
+  <div class="band-copy">
+    <span class="band-eyebrow">{number} / contact</span>
+    <h2 class="band-heading">{heading}</h2>
+  </div>
+
+  <a href={`mailto:${basic.email}`} class="band-btn">{basic.email} ↗</a>
+</section>
+
+<style>
+.contact-band {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  padding-top: 44px;
+  padding-bottom: 44px;
+  background: var(--color-invert-bg);
+  color: var(--color-invert-text);
+}
+
+.band-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.band-eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-invert-accent);
+}
+
+.band-heading {
+  font-family: var(--font-display);
+  font-size: clamp(24px, 3.4vw, 34px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  line-height: 1.05;
+}
+
+.band-btn {
+  padding: 16px 26px;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  background: var(--color-primary);
+  color: #ffffff;
+  transition: transform 0.15s ease;
+}
+
+.band-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* On the dark theme the band is light, so the button goes neutral-dark
+   rather than accent — matching the dark frame in the design. */
+:global([data-theme="dark"]) .band-btn {
+  background: #0B0B0B;
+  color: #EFEFED;
+}
+
+@media (max-width: 720px) {
+  .contact-band {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+    padding-top: 36px;
+    padding-bottom: 36px;
+  }
+
+  .band-btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+</style>

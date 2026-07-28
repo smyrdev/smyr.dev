@@ -1,0 +1,85 @@
+---
+/**
+ * Two hairlines that track the cursor — the "playful/experimental"
+ * touch from the design. Fine pointers only, and it stays out of the
+ * way of reduced-motion users.
+ */
+---
+
+<div class="crosshair" aria-hidden="true">
+  <div class="cross-v" data-cross-v></div>
+  <div class="cross-h" data-cross-h></div>
+</div>
+
+<script>
+  const v = document.querySelector<HTMLElement>('[data-cross-v]');
+  const h = document.querySelector<HTMLElement>('[data-cross-h]');
+
+  const fine = window.matchMedia('(pointer: fine)').matches;
+  const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (v && h && fine && !calm) {
+    let frame: number | null = null;
+
+    const move = (e: MouseEvent) => {
+      if (frame) return;
+
+      frame = requestAnimationFrame(() => {
+        frame = null;
+        v.style.transform = `translateX(${e.clientX}px)`;
+        h.style.transform = `translateY(${e.clientY}px)`;
+        v.style.opacity = '1';
+        h.style.opacity = '1';
+      });
+    };
+
+    const hide = () => {
+      v.style.opacity = '0';
+      h.style.opacity = '0';
+    };
+
+    window.addEventListener('mousemove', move, { passive: true });
+    document.addEventListener('mouseleave', hide);
+  }
+</script>
+
+<style>
+.crosshair {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+}
+
+.cross-v,
+.cross-h {
+  position: absolute;
+  background: var(--color-crosshair);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  will-change: transform;
+}
+
+.cross-v {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 1px;
+}
+
+.cross-h {
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+}
+
+/* No cursor to follow — don't paint anything. */
+@media (pointer: coarse) {
+  .crosshair { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crosshair { display: none; }
+}
+</style>
