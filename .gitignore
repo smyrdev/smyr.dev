@@ -20,6 +20,9 @@ pnpm-debug.log*
 # macOS-specific files
 .DS_Store
 
+# personal notes
+.todos
+
 # jetbrains setting folder
 .idea/
 .dist/
