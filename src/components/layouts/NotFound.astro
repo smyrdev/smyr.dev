@@ -1,12 +1,118 @@
-<section class="bg-background  min-h-full  flex items-center">
-    <div class="flex flex-col items-center max-w-sm mx-auto text-center">
-        <h1 class="mt-3 text-2xl font-semibold md:text-3xl">Page not found</h1>
-        <p class="mt-4 text-offset">The page you are looking for doesn't exist.</p>
+---
+import { menuItems } from "../../config/cv.json";
+---
 
-        <a href="/">
-            <button class="mt-5 px-5 py-2 text-sm tracking-wide text-white transition-colors duration-200 rounded-lg shrink-0 sm:w-auto bg-primary hover:bg-secondary">
-                Take me home
-            </button>
-        </a>
+<section class="notfound">
+  <div class="nf-copy gutter">
+    <span class="nf-code">404 / not found</span>
+    <h1 class="nf-title">This page<br />doesn't exist</h1>
+    <p class="nf-body">
+      Either the link is wrong or something moved. Both are my fault, not yours.
+    </p>
+
+    <div class="nf-links">
+      <a href="/" class="nf-link">home ↑</a>
+      {menuItems.map(item => (
+        <a href={item.link} class="nf-link">{item.name.toLowerCase()} →</a>
+      ))}
     </div>
+  </div>
+
+  <div class="nf-grid" aria-hidden="true"></div>
 </section>
+
+<style>
+.notfound {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  border-bottom: 1px solid var(--color-border);
+  min-height: 520px;
+}
+
+.nf-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+  padding-top: 56px;
+  padding-bottom: 56px;
+}
+
+.nf-code {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.nf-title {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 6vw, 64px);
+  font-weight: 700;
+  line-height: 0.94;
+  letter-spacing: -0.045em;
+  text-transform: uppercase;
+}
+
+.nf-body {
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--color-text-offset);
+  max-width: 46ch;
+}
+
+.nf-links {
+  display: flex;
+  border: 1px solid var(--color-border);
+  width: fit-content;
+  max-width: 100%;
+  flex-wrap: wrap;
+}
+
+.nf-link {
+  padding: 12px 18px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  border-right: 1px solid var(--color-border);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.nf-link:last-child {
+  border-right: none;
+}
+
+.nf-link:hover {
+  background: var(--color-invert-bg);
+  color: var(--color-invert-text);
+}
+
+.nf-grid {
+  border-left: 1px solid var(--color-border);
+  background-image:
+    linear-gradient(var(--color-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-grid) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+@media (max-width: 900px) {
+  .notfound {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+  }
+
+  .nf-grid {
+    display: none;
+  }
+
+  .nf-links {
+    width: 100%;
+  }
+
+  .nf-link {
+    flex: 1 1 auto;
+    text-align: center;
+  }
+}
+</style>

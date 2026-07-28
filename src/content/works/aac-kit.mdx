@@ -1,0 +1,45 @@
+---
+title: aac-kit
+blurb: Architecture in code, asserted in tests
+type: open source
+year: '2025'
+order: 2
+featured: true
+href: 'https://github.com/smyrdev/aac-kit'
+linkLabel: github ↗
+role: Author & maintainer
+status: Maintained
+stack:
+  - TypeScript
+  - Node
+problem: >-
+  A diagram drawn once drifts from the code by week three, and nothing fails
+  when it does. The architecture exists in someone's head and in a stale PNG.
+approach: >-
+  Define modules, boundaries and allowed dependencies as code. Ship a test
+  runner that fails the build when an import crosses a boundary it should not,
+  and generate the diagram from the same definition on every commit.
+outcome: >-
+  Placeholder outcome — the diagram cannot drift because it is generated, and
+  boundary violations are caught in CI instead of code review.
+---
+
+> Placeholder project page. The structure is real; the copy is not.
+
+## Problem
+
+Architecture documentation rots because nothing depends on it. The moment the
+diagram and the code disagree, the diagram loses — quietly, and usually months
+before anyone notices.
+
+## Approach
+
+`aac-kit` treats the architecture as a first-class artefact in the repository:
+
+- **Define** the modules and the dependency rules between them in a single file.
+- **Assert** those rules in the test suite, so a forbidden import is a red build.
+- **Generate** the diagram from the definition, so it is never hand-maintained.
+
+## Outcome
+
+Describe adoption, the classes of bug it caught, and what it cost to introduce.

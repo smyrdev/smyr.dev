@@ -1,309 +1,233 @@
 ---
 import { getCollection } from 'astro:content';
+import SectionHeader from '../common/SectionHeader.astro';
+import { syndication } from '../../config/cv.json';
 
 const allBlog = await getCollection('blog');
+
 const latest = allBlog
   .sort((a, b) => new Date(b.data.datetime).getTime() - new Date(a.data.datetime).getTime())
   .slice(0, 3);
 
 const getSlug = (id: string) => id.replace(/\.mdx?$/, '');
 
-const formatDate = (d: string) => new Date(d).toLocaleDateString('en-US', {
-  year: 'numeric', month: 'short', day: 'numeric'
+// "19 jun 2026" — rendered uppercase by the meta row.
+const formatDate = (d: string) => new Date(d).toLocaleDateString('en-GB', {
+  day: '2-digit', month: 'short', year: 'numeric',
 });
+
+const slugifyTag = (t: string) => t.toLowerCase().replace(/\s+/g, '-');
+
+const tags = [...new Set(allBlog.flatMap(p => p.data.tags ?? []))].slice(0, 3);
+
+// The strip is a three-up. With fewer posts than that, hold the rhythm with
+// empty graph-paper cells rather than stretching one card across the page.
+const SLOTS = 3;
+const fillers = Math.max(SLOTS - latest.length, 0);
 ---
 
-<section class="latest-section">
-  <div class="container mx-auto max-w-6xl px-4 md:px-8">
+<section id="blog" class="blog-section">
+  <SectionHeader
+    number="02"
+    title="Blog"
+    size="lg"
+    offset={true}
+    linkHref="/blog"
+    linkLabel="all posts →"
+  />
 
-    <div class="section-header">
-      <div class="section-label">
-        <span class="label-dot" aria-hidden="true"></span>
-        From the blog
-      </div>
-      <h2 class="section-title">Latest Writing</h2>
-      <p class="section-sub">Thoughts on life, work, and everything in between.</p>
-    </div>
-
-    <div class="posts-grid">
-      {latest.map((post, i) => (
-        <article class:list={['post-card', { 'post-card--featured': i === 0 }]}>
-          {post.data.image && (
-            <a href={`/blog/${getSlug(post.id)}`} class="card-img-link" tabindex="-1" aria-hidden="true">
-              <img
-                src={post.data.image}
-                alt={post.data.title}
-                class="card-img"
-                loading="lazy"
-              />
-            </a>
-          )}
-          <div class="card-body">
-            <div class="card-meta">
-              {post.data.category && (
-                <a href={`/blog/category/${post.data.category.toLowerCase().replace(/\s+/g,'-')}`} class="cat-badge">
-                  {post.data.category}
-                </a>
-              )}
-              {post.data.tags?.slice(0,1).map(t => (
-                <span class="tag-badge">#{t}</span>
-              ))}
-            </div>
-            <a href={`/blog/${getSlug(post.id)}`} class="card-title-link">
-              <h3 class="card-title">{post.data.title}</h3>
-            </a>
-            <p class="card-desc">{post.data.description}</p>
-            <time datetime={post.data.datetime} class="card-date">
-              {formatDate(post.data.datetime)}
-              {post.data.type && (
-              <span>
-                 ({post.data.type})
-              </span>
-              )}
-            </time>
-             
+  {latest.length > 0 ? (
+    <div class="cards hairline-grid">
+      {latest.map(post => (
+        <a href={`/blog/${getSlug(post.id)}`} class="card">
+          <div class="card-top">
+            <span class="card-category">{post.data.category}</span>
+            <span>{formatDate(post.data.datetime)}</span>
           </div>
-        </article>
+
+          <h3 class="card-title">{post.data.title}</h3>
+
+          {post.data.description && (
+            <p class="card-desc">{post.data.description}</p>
+          )}
+
+          <div class="card-bottom">
+            <span>{post.data.type} · {post.data.time_to_read} min</span>
+            <span class="card-read">read →</span>
+          </div>
+        </a>
+      ))}
+
+      {Array.from({ length: fillers }).map(() => (
+        <div class="card card-empty" aria-hidden="true"></div>
       ))}
     </div>
+  ) : (
+    <p class="empty gutter">Nothing published yet.</p>
+  )}
 
-    <div class="section-footer">
-      <a href="/blog" class="all-posts-btn">
-        View all posts
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
-          <path d="M5 12h14M12 5l7 7-7 7"/>
-        </svg>
-      </a>
+  <div class="tagbar gutter">
+    <div class="tag-list">
+      {tags.map(tag => (
+        <a href={`/blog/tag/${slugifyTag(tag)}`} class="tag">#{slugifyTag(tag)}</a>
+      ))}
     </div>
-
+    <span class="syndication">one source → {syndication.join(' · ')}</span>
   </div>
 </section>
 
 <style>
-.badge-type {
-  display: inline-flex;
-  align-items: center;
-  font-size: 11px;
-  font-weight: 600;
-  padding: 2px 9px;
-  border-radius: 100px;
-  white-space: nowrap;
-  background: #f0f0f0;
-  color: #757575;
-  border: 1px solid #dcdcdc;
+.blog-section {
+  border-bottom: 1px solid var(--color-border);
 }
 
-.latest-section {
-  padding: 5rem 0 5rem;
-  border-top: 1px solid var(--color-border);
-}
-
-.section-header {
-  margin-bottom: 2.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.section-label {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  color: var(--color-text-offset);
-}
-
-.label-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--color-primary);
-  display: inline-block;
-}
-
-.section-title {
-  font-size: clamp(1.5rem, 3vw, 2.1rem);
-  font-weight: 700;
-  letter-spacing: -0.025em;
-  color: var(--color-text);
-  line-height: 1.15;
-}
-
-.section-sub {
-  font-size: 0.9375rem;
-  color: var(--color-text-offset);
-}
-
-/* ── Grid ── */
-.posts-grid {
+/* Dividers come from .hairline-grid; this only sets the track count. */
+.cards {
   display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr;
-  gap: 1rem;
-  align-items: start;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-/* ── Card base ── */
-.post-card {
-  border: 1px solid var(--color-border);
-  border-radius: 14px;
-  overflow: hidden;
-  background: var(--color-background-offset);
+/* Unfilled slot — same graph paper as the hero panel. */
+.card-empty {
+  background-color: var(--color-background);
+  background-image:
+    linear-gradient(var(--color-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-grid) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.card {
   display: flex;
   flex-direction: column;
-  transition: border-color 0.18s, box-shadow 0.18s, transform 0.18s;
+  gap: 14px;
+  padding: 32px;
+  min-height: 300px;
+  background: var(--color-background);
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
-.post-card:hover {
-  border-color: color-mix(in srgb, var(--color-primary) 35%, var(--color-border));
-  box-shadow: 0 8px 28px -8px color-mix(in srgb, var(--color-primary) 18%, transparent);
-  transform: translateY(-2px);
+.card:hover {
+  background: var(--color-invert-bg);
+  color: var(--color-invert-text);
 }
 
-/* Ensure both featured and standard cards use the same ratio */
-.post-card--featured .card-img-link { 
-  aspect-ratio: 16 / 8; /* You can set this to whatever ratio you prefer */
-}
-
-/* 1. The container acts as the frame with the border-radius */
-.card-img-link {
-  display: block;
-  height: 85%;        /* Set a fixed height for consistency */
-  width: 100%;
-  overflow: hidden;     /* This clips the image to the border-radius */
-  border-radius: 14px;  /* Apply radius here, not on the image */
-  background: var(--color-background-offset); /* Shown if image is narrow */
-}
-
-/* 2. The image fills the frame without distortion */
-.card-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;    /* Ensures wide/narrow images fill the 200px height */
-  object-position: center;
-  display: block;
-  transition: transform 0.4s ease;
-}
-.post-card:hover .card-img { transform: scale(1.04); }
-
-.card-body {
-  padding: 1.1rem 1.25rem 1.35rem;
+.card-top,
+.card-bottom {
   display: flex;
-  flex-direction: column;
-  gap: 0.45rem;
-  flex: 1;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
 }
 
-.card-meta {
+.card-bottom {
+  margin-top: auto;
+}
+
+.card-category,
+.card-read {
+  color: var(--color-primary);
+  white-space: nowrap;
+}
+
+.card-title {
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  text-transform: none;
+}
+
+.card-desc {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--color-text-offset);
+}
+
+/* The mock's card body keeps its dark grey on hover, which goes
+   invisible against the inverted ground — lift it instead. */
+.card:hover .card-desc {
+  color: color-mix(in srgb, var(--color-invert-text) 72%, transparent);
+}
+
+.card:hover .card-top,
+.card:hover .card-bottom {
+  color: color-mix(in srgb, var(--color-invert-text) 55%, transparent);
+}
+
+.empty {
+  padding-top: 32px;
+  padding-bottom: 32px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+/* ── Tag bar ── */
+.tagbar {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 5px;
+  gap: 12px 20px;
+  flex-wrap: wrap;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  border-top: 1px solid var(--color-border);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.tag-list {
+  display: flex;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
-.cat-badge {
-  display: inline-flex;
-  align-items: center;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  padding: 2px 8px;
-  border-radius: 100px;
-  background: var(--color-primary);
-  color: #fff;
-  text-decoration: none;
-  transition: opacity 0.15s;
-}
-.cat-badge:hover { opacity: 0.8; }
-
-.tag-badge {
-  display: inline-flex;
-  align-items: center;
-  font-size: 10px;
-  font-weight: 500;
-  padding: 2px 7px;
-  border-radius: 100px;
-  background: color-mix(in srgb, var(--color-text) 7%, var(--color-background));
-  color: var(--color-text-offset);
-  border: 1px solid var(--color-border);
+.tag {
+  transition: color 0.15s ease;
 }
 
-.card-title-link { display: block; }
-.card-title {
-  font-size: clamp(0.9375rem, 1.5vw, 1.075rem);
-  font-weight: 600;
-  line-height: 1.3;
-  letter-spacing: -0.01em;
-  color: var(--color-text);
-  transition: color 0.15s;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-.card-title-link:hover .card-title { color: var(--color-primary); }
-
-.card-desc {
-  font-size: 0.8125rem;
-  line-height: 1.55;
-  color: var(--color-text-offset);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.card-date {
-  font-size: 11px;
-  color: var(--color-text-offset);
-  margin-top: auto;
-  padding-top: 0.35rem;
-}
-
-/* ── Footer CTA ── */
-.section-footer {
-  display: flex;
-  justify-content: center;
-  margin-top: 2.5rem;
-}
-
-.all-posts-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 11px 24px;
-  border: 1px solid var(--color-border);
-  border-radius: 10px;
-  background: var(--color-background-offset);
-  color: var(--color-text);
-  font-size: 14px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.15s;
-}
-
-.all-posts-btn:hover {
-  border-color: var(--color-primary);
-  background: color-mix(in srgb, var(--color-primary) 6%, var(--color-background-offset));
+.tag:hover {
   color: var(--color-primary);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 14px -4px color-mix(in srgb, var(--color-primary) 20%, transparent);
 }
 
-.all-posts-btn svg {
-  transition: transform 0.15s;
-}
-.all-posts-btn:hover svg { transform: translateX(3px); }
+@media (max-width: 980px) {
+  .cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 
-/* ── Responsive ── */
-@media (max-width: 900px) {
-  .posts-grid { grid-template-columns: 1fr 1fr; }
-  .post-card--featured { grid-column: 1 / -1; }
+  .card {
+    min-height: 260px;
+    padding: 26px;
+  }
+
+  .card-title {
+    font-size: 26px;
+  }
 }
 
-@media (max-width: 600px) {
-  .posts-grid { grid-template-columns: 1fr; }
+@media (max-width: 640px) {
+  .cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .card {
+    padding: 24px var(--page-gutter);
+    min-height: 0;
+  }
+
+  /* No point holding empty slots once the grid is a single column. */
+  .card-empty {
+    display: none;
+  }
+
+  .syndication {
+    width: 100%;
+  }
 }
 </style>

@@ -1,31 +1,16 @@
-const themes = ['dark', 'light'];
+export type Theme = 'light' | 'dark';
 
-const getCurrentTheme = () => document.documentElement.dataset.theme;
+export const getCurrentTheme = (): Theme =>
+    document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
 
-export const getNextTheme = () => {
-    const currentTheme = getCurrentTheme();
-    const indexThemeCurrent = themes.indexOf(currentTheme || 'dark');
+export const getNextTheme = (): Theme =>
+    getCurrentTheme() === 'dark' ? 'light' : 'dark';
 
-    return themes[(indexThemeCurrent + 1) % themes.length];
-};
-
-export const updateToggleThemeIcon = () => {
-    const currentTheme = getCurrentTheme();
-    document.querySelector(`#icon-theme-${currentTheme}`)?.classList.add("hidden");
-
-    const themeNext = getNextTheme();
-    document.querySelector(`#icon-theme-${themeNext}`)?.classList.remove("hidden");
-};
-
-export const toggleMarkdownTheme = (newTheme: string) => {
-    const contentElement = document.getElementById('markdown');
-    if (!contentElement) {
-        return;
-    }
-
-    if (newTheme === "dark") {
-        contentElement.classList.add('prose-invert');
-    } else {
-        contentElement.classList.remove('prose-invert');
-    }
+/**
+ * Flip the theme and remember the choice. Everything visual keys off
+ * `data-theme` on <html>, so setting it here is all that's needed.
+ */
+export const setTheme = (theme: Theme) => {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem('theme', theme);
 };

@@ -2,9 +2,14 @@
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/sections/Hero.astro';
 import LatestPosts from '../components/sections/LatestPosts.astro';
+import WorksStrip from '../components/sections/WorksStrip.astro';
+import ContactBand from '../components/sections/ContactBand.astro';
+import { basic } from '../config/cv.json';
 ---
 
-<Layout title="Samyar Rahimi's Portfolio">
+<Layout title={basic.domain} description={basic.summary}>
   <Hero />
   <LatestPosts />
+  <WorksStrip />
+  <ContactBand />
 </Layout>

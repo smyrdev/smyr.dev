@@ -1,0 +1,197 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SectionHeader from '../components/common/SectionHeader.astro';
+import ContactBand from '../components/sections/ContactBand.astro';
+
+// ── Edit this block, not the markup. ──────────────────────────────
+// Bump `updated` whenever you change anything below it.
+const updated = '2026-07-28';
+
+const focus = [
+  {
+    number: '01',
+    title: 'Building',
+    body: `Placeholder — what has most of your attention right now. One or two
+      sentences is plenty; this page is a status, not a portfolio.`,
+  },
+  {
+    number: '02',
+    title: 'Writing',
+    body: `Placeholder — the post currently in draft, and what it is arguing.`,
+  },
+  {
+    number: '03',
+    title: 'Reading',
+    body: `Placeholder — the book or paper you are actually part-way through.`,
+  },
+  {
+    number: '04',
+    title: 'Learning',
+    body: `Placeholder — the thing you are deliberately bad at at the moment.`,
+  },
+];
+
+const uses = [
+  { label: 'editor', value: 'Placeholder' },
+  { label: 'terminal', value: 'Placeholder' },
+  { label: 'machine', value: 'Placeholder' },
+  { label: 'languages', value: 'Placeholder' },
+  { label: 'infra', value: 'Placeholder' },
+  { label: 'notes', value: 'Placeholder' },
+];
+// ──────────────────────────────────────────────────────────────────
+
+const updatedLabel = new Date(updated).toLocaleDateString('en-GB', {
+  day: '2-digit', month: 'short', year: 'numeric',
+});
+---
+
+<Layout
+  title="Now"
+  description="What Samyar Rahimi is working on, writing and reading at the moment."
+>
+  <SectionHeader
+    number="01"
+    title="Now"
+    size="lg"
+    note={`updated ${updatedLabel}`}
+  />
+
+  <div class="intro gutter">
+    <p>
+      A snapshot of what has my attention at the moment, in the spirit of
+      <a href="https://nownownow.com/about" target="_blank" rel="noopener noreferrer">nownownow.com</a>.
+      If it looks stale, it probably is — the date above is the honest one.
+    </p>
+  </div>
+
+  <div class="focus">
+    {focus.map(item => (
+      <article class="focus-row">
+        <div class="focus-head">
+          <span class="focus-number">{item.number} /</span>
+          <h2 class="focus-title">{item.title}</h2>
+        </div>
+        <p class="focus-body">{item.body}</p>
+      </article>
+    ))}
+  </div>
+
+  <SectionHeader number="02" title="Uses" size="sm" note="tools, not endorsements" />
+
+  <dl class="uses hairline-grid">
+    {uses.map(item => (
+      <div class="use">
+        <dt>{item.label}</dt>
+        <dd>{item.value}</dd>
+      </div>
+    ))}
+  </dl>
+
+  <ContactBand number="03" heading="Working on something similar?" />
+</Layout>
+
+<style>
+.intro {
+  padding-top: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.intro p {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--color-text-offset);
+  max-width: 62ch;
+}
+
+.intro a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ── Focus rows ── */
+.focus-row {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 24px;
+  padding: 26px var(--page-gutter);
+  border-bottom: 1px solid var(--color-border);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.focus-row:hover {
+  background: var(--color-invert-bg);
+  color: var(--color-invert-text);
+}
+
+.focus-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.focus-number {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--color-text-muted);
+}
+
+.focus-title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+.focus-body {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--color-text-offset);
+  max-width: 62ch;
+}
+
+.focus-row:hover .focus-body {
+  color: color-mix(in srgb, var(--color-invert-text) 72%, transparent);
+}
+
+.focus-row:hover .focus-number {
+  color: color-mix(in srgb, var(--color-invert-text) 55%, transparent);
+}
+
+/* ── Uses grid ── */
+.uses {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  border-bottom: 1px solid var(--color-border);
+}
+
+.use {
+  background: var(--color-background);
+  padding: 18px var(--page-gutter);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.use dt {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.use dd {
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+@media (max-width: 720px) {
+  .focus-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+}
+</style>

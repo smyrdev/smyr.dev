@@ -1,0 +1,81 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  work: CollectionEntry<'works'>;
+}
+
+const { work } = Astro.props;
+
+const slug = work.id.replace(/\.mdx?$/, '');
+const href = work.data.href ?? `/works/${slug}`;
+const external = Boolean(work.data.href);
+---
+
+<a
+  href={href}
+  class="work-card"
+  target={external ? '_blank' : undefined}
+  rel={external ? 'noopener noreferrer' : undefined}
+>
+  <div class="work-top">
+    <span class="work-title">{work.data.title}</span>
+    <span class="work-type">{work.data.type}</span>
+  </div>
+  <span class="work-blurb">{work.data.blurb} · {work.data.linkLabel}</span>
+</a>
+
+<style>
+.work-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px 24px;
+  background: var(--color-background);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.work-card:hover {
+  background: var(--color-invert-bg);
+  color: var(--color-invert-text);
+}
+
+.work-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.work-title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.work-type {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  white-space: nowrap;
+}
+
+.work-blurb {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--color-text-nav);
+}
+
+/* Keep the sub-line readable once the card inverts. */
+.work-card:hover .work-blurb {
+  color: color-mix(in srgb, var(--color-invert-text) 70%, transparent);
+}
+
+@media (max-width: 640px) {
+  .work-card {
+    padding: 18px var(--page-gutter);
+  }
+}
+</style>

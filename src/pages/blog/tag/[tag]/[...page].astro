@@ -3,16 +3,22 @@ import { getCollection } from 'astro:content';
 import BlogPage from '../../../../components/sections/blog/BlogPage.astro';
 
 export async function getStaticPaths({ paginate }) {
+  // Defined in here: Astro hoists getStaticPaths into its own module scope.
+  const slugify = (s: string) => s.toLowerCase().replace(/\s+/g, '-');
+
   const allBlog = await getCollection('blog');
   const tags = [...new Set(allBlog.flatMap(p => p.data.tags ?? []))];
 
   return tags.flatMap(tag => {
+    // Routes are slugged — "software design" lives at /blog/tag/software-design
+    const slug = slugify(tag);
+
     const filtered = allBlog
-      .filter(p => p.data.tags?.includes(tag))
+      .filter(p => (p.data.tags ?? []).some(t => slugify(t) === slug))
       .sort((a, b) => new Date(b.data.datetime).getTime() - new Date(a.data.datetime).getTime());
 
     return paginate(filtered, {
-      params: { tag },
+      params: { tag: slug },
       props: { activeTag: tag },
       pageSize: 5,
     });

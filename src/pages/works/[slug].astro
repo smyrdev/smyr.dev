@@ -1,0 +1,295 @@
+---
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import ContactBand from '../../components/sections/ContactBand.astro';
+
+export const getStaticPaths = async () => {
+  const works = await getCollection('works');
+
+  return works.map(item => ({
+    params: { slug: item.id.replace(/\.mdx?$/, '') },
+    props: { work: item },
+  }));
+};
+
+type Props = { work: CollectionEntry<'works'> };
+const { work } = Astro.props;
+const { Content } = await render(work);
+
+const { title, blurb, type, year, status, role, stack, href, repo, linkLabel } = work.data;
+
+const facts = [
+  role && { label: 'role', value: role },
+  year && { label: 'year', value: year },
+  status && { label: 'status', value: status },
+  stack.length > 0 && { label: 'stack', value: stack.join(' · ') },
+].filter(Boolean) as { label: string; value: string }[];
+
+const links = [
+  href && { label: linkLabel, href },
+  repo && { label: 'source ↗', href: repo },
+].filter(Boolean) as { label: string; href: string }[];
+
+// problem → approach → outcome, numbered like every other section.
+const arc = [
+  work.data.problem && { number: '01', title: 'Problem', body: work.data.problem },
+  work.data.approach && { number: '02', title: 'Approach', body: work.data.approach },
+  work.data.outcome && { number: '03', title: 'Outcome', body: work.data.outcome },
+].filter(Boolean) as { number: string; title: string; body: string }[];
+---
+
+<Layout title={title} description={blurb}>
+  <article class="work">
+    <header class="work-header gutter">
+      <div class="header-inner">
+      <a href="/works" class="back">← all works</a>
+
+      <div class="chips">
+        <span class="chip chip-type">{type}</span>
+        {year && <span class="chip">{year}</span>}
+        {status && <span class="chip">{status}</span>}
+      </div>
+
+      <h1 class="work-title">{title}</h1>
+      <p class="work-blurb">{blurb}</p>
+
+      {links.length > 0 && (
+        <div class="links">
+          {links.map(link => (
+            <a href={link.href} class="link" target="_blank" rel="noopener noreferrer">
+              {link.label}
+            </a>
+          ))}
+        </div>
+      )}
+      </div>
+    </header>
+
+    {facts.length > 0 && (
+      <dl class="facts hairline-grid">
+        {facts.map(fact => (
+          <div class="fact">
+            <dt>{fact.label}</dt>
+            <dd>{fact.value}</dd>
+          </div>
+        ))}
+      </dl>
+    )}
+
+    {arc.length > 0 && (
+      <div class="arc">
+        {arc.map(step => (
+          <section class="arc-step gutter">
+            <div class="arc-head">
+              <span class="arc-number">{step.number} /</span>
+              <h2 class="arc-title">{step.title}</h2>
+            </div>
+            <p class="arc-body">{step.body}</p>
+          </section>
+        ))}
+      </div>
+    )}
+
+    <div class="work-body gutter">
+      <div id="markdown" class="prose max-w-none">
+        <Content />
+      </div>
+
+      <a href="/works" class="back back-bottom">← all works</a>
+    </div>
+  </article>
+
+  <ContactBand number="04" heading="Similar problem on your desk?" />
+</Layout>
+
+<style>
+/* Border spans the full frame; only the content is held to a measure. */
+.work-header {
+  padding-top: 36px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.header-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 900px;
+}
+
+.back {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  width: fit-content;
+  transition: color 0.15s ease;
+}
+
+.back:hover {
+  color: var(--color-primary);
+}
+
+.chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border: 1px solid var(--color-border);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-nav);
+  white-space: nowrap;
+}
+
+.chip-type {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.work-title {
+  font-family: var(--font-display);
+  font-size: clamp(34px, 5.6vw, 60px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  text-transform: uppercase;
+}
+
+.work-blurb {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--color-text-offset);
+  max-width: 60ch;
+}
+
+.links {
+  display: flex;
+  border: 1px solid var(--color-border);
+  width: fit-content;
+  max-width: 100%;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.link {
+  padding: 11px 16px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  border-right: 1px solid var(--color-border);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.link:last-child {
+  border-right: none;
+}
+
+.link:hover {
+  background: var(--color-invert-bg);
+  color: var(--color-invert-text);
+}
+
+/* ── Facts strip ── */
+.facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  border-bottom: 1px solid var(--color-border);
+}
+
+.fact {
+  background: var(--color-background);
+  padding: 18px var(--page-gutter);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fact dt {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.fact dd {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--color-text);
+}
+
+/* ── problem → approach → outcome ── */
+.arc-step {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 24px;
+  padding-top: 26px;
+  padding-bottom: 26px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.arc-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.arc-number {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--color-text-muted);
+}
+
+.arc-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.arc-body {
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--color-text-offset);
+  max-width: 62ch;
+}
+
+.work-body {
+  padding-top: 40px;
+  padding-bottom: 48px;
+  max-width: 900px;
+}
+
+.back-bottom {
+  display: block;
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid var(--color-border);
+  width: 100%;
+}
+
+@media (max-width: 720px) {
+  .arc-step {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .links {
+    width: 100%;
+  }
+
+  .link {
+    flex: 1 1 auto;
+    text-align: center;
+  }
+}
+</style>

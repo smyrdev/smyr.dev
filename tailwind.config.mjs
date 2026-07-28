@@ -8,21 +8,24 @@ export default {
 				primary: "var(--color-primary)",
 				secondary: "var(--color-secondary)",
 			},
+			fontFamily: {
+				display: ["Archivo", "ui-sans-serif", "system-ui", "sans-serif"],
+				mono: ["JetBrains Mono", "ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
+			},
 			textColor: {
 				default: "var(--color-text)",
 				offset: "var(--color-text-offset)",
+				muted: "var(--color-text-muted)",
+				nav: "var(--color-text-nav)",
+				invert: "var(--color-invert-text)",
 			},
 			backgroundColor: {
 				default: "var(--color-background)",
 				offset: "var(--color-background-offset)",
-				border: "var(--color-border)",
+				invert: "var(--color-invert-bg)",
 			},
 			borderColor: {
 				default: "var(--color-border)",
-			},
-			animation: {
-				"spin-slower": "spin 35s ease infinite",
-				"spin-slow": "spin 25s ease-in-out infinite reverse",
 			},
 		}
 	},

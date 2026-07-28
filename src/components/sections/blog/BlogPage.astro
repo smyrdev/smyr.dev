@@ -3,6 +3,7 @@ import Layout from '../../../layouts/Layout.astro';
 import BlogList from '../../sections/blog/BlogList.astro';
 import BlogBanner from '../../sections/blog/BlogBanner.astro';
 import Pagination from '../../common/Pagination.astro';
+import ContactBand from '../../sections/ContactBand.astro';
 import { getCollection } from 'astro:content';
 import type { Page } from 'astro';
 import type { CollectionEntry } from 'astro:content';
@@ -21,6 +22,8 @@ const categories = [...new Set(allPosts.map(p => p.data.category).filter(Boolean
 const tags = [...new Set(allPosts.map(p => p.data.tags).filter(Boolean).flat())].sort() as string[];
 const getSlug = (id: string) => id.replace(/\.mdx?$/, '');
 
+const title = activeCategory ?? (activeTag ? `#${activeTag}` : 'Blog');
+
 // Serialize all posts for client-side search
 const searchIndex = allPosts.map(p => ({
   slug: getSlug(p.id),
@@ -29,11 +32,10 @@ const searchIndex = allPosts.map(p => ({
   category: p.data.category,
   tags: p.data.tags,
   datetime: p.data.datetime,
-  image: p.data.image,
 }));
 ---
 
-<Layout title="Blog">
+<Layout title={title} description={`Writing on architecture, systems and founding — ${title}.`}>
   <BlogBanner
     totalPosts={page.total}
     categories={categories}
@@ -42,179 +44,219 @@ const searchIndex = allPosts.map(p => ({
     activeTag={activeTag}
   />
   <BlogList blog={(page?.data ?? []) as any} />
-  <div class="container mx-auto px-4 max-w-4xl pb-8">
-    <Pagination page={page} />
-  </div>
+  <Pagination page={page} />
+  <ContactBand number="02" heading="Read something you disagree with?" />
 </Layout>
 
-<script define:vars={{ searchIndex }}>
+<script is:inline define:vars={{ searchIndex }}>
 const input = document.getElementById('blog-search');
 const overlay = document.getElementById('search-results');
 
-if (!input || !overlay) throw new Error('Search elements missing');
+if (input && overlay) {
+  let debounceTimer;
 
-let debounceTimer;
+  const escapeHtml = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+  })[c]);
 
-function renderResults(query) {
-  const q = query.trim().toLowerCase();
-  if (!q) {
-    overlay.hidden = true;
-    overlay.innerHTML = '';
-    return;
-  }
+  function renderResults(query) {
+    const q = query.trim().toLowerCase();
 
-  const hits = searchIndex.filter(p =>
-    p.title.toLowerCase().includes(q) ||
-    p.description.toLowerCase().includes(q) ||
-    (p.category && p.category.toLowerCase().includes(q)) ||
-    (p.tags && p.tags.some(t => t.toLowerCase().includes(q)))
-  ).slice(0, 8);
+    if (!q) {
+      overlay.hidden = true;
+      overlay.innerHTML = '';
+      return;
+    }
 
-  overlay.hidden = false;
+    const hits = searchIndex.filter(p =>
+      p.title.toLowerCase().includes(q) ||
+      (p.description && p.description.toLowerCase().includes(q)) ||
+      (p.category && p.category.toLowerCase().includes(q)) ||
+      (p.tags && p.tags.some(t => t.toLowerCase().includes(q)))
+    ).slice(0, 8);
 
-  if (hits.length === 0) {
-    overlay.innerHTML = `
-      <div class="sr-box">
-        <div class="sr-header"><span class="sr-query">"${query}"</span><button class="sr-close" aria-label="Close search">✕</button></div>
-        <p class="sr-empty">No posts found for this search.</p>
+    overlay.hidden = false;
+
+    const header = `
+      <div class="sr-header">
+        <span class="sr-query">${hits.length} ${hits.length === 1 ? 'result' : 'results'} for "${escapeHtml(query)}"</span>
+        <button class="sr-close" aria-label="Close search">✕</button>
       </div>`;
-  } else {
-    overlay.innerHTML = `
-      <div class="sr-box">
-        <div class="sr-header">
-          <span class="sr-query">${hits.length} result${hits.length > 1 ? 's' : ''} for "<strong>${query}</strong>"</span>
-          <button class="sr-close" aria-label="Close search">✕</button>
-        </div>
-        <ul class="sr-list">
-          ${hits.map(p => `
+
+    const body = hits.length === 0
+      ? `<p class="sr-empty">Nothing matches that.</p>`
+      : `<ul class="sr-list">
+          ${hits.map((p, i) => `
             <li class="sr-item">
               <a href="/blog/${p.slug}" class="sr-link">
-                ${p.image ? `<img src="${p.image}" alt="" class="sr-thumb" loading="lazy"/>` : `<div class="sr-thumb-placeholder">${p.title.charAt(0)}</div>`}
-                <div class="sr-text">
-                  <span class="sr-cat">${p.category ?? ''}</span>
-                  <span class="sr-title">${p.title}</span>
-                  <span class="sr-desc">${p.description}</span>
-                </div>
+                <span class="sr-index">${String(i + 1).padStart(2, '0')}</span>
+                <span class="sr-text">
+                  <span class="sr-cat">${escapeHtml(p.category ?? '')}</span>
+                  <span class="sr-title">${escapeHtml(p.title)}</span>
+                  <span class="sr-desc">${escapeHtml(p.description)}</span>
+                </span>
+                <span class="sr-arrow" aria-hidden="true">→</span>
               </a>
-            </li>
-          `).join('')}
-        </ul>
-      </div>`;
+            </li>`).join('')}
+        </ul>`;
+
+    overlay.innerHTML = `<div class="sr-box">${header}${body}</div>`;
+    overlay.querySelector('.sr-close')?.addEventListener('click', closeSearch);
   }
 
-  overlay.querySelector('.sr-close')?.addEventListener('click', closeSearch);
-}
-
-function closeSearch() {
-  overlay.hidden = true;
-  overlay.innerHTML = '';
-  input.value = '';
-}
-
-input.addEventListener('input', e => {
-  clearTimeout(debounceTimer);
-  debounceTimer = setTimeout(() => renderResults(e.target.value), 200);
-});
-
-input.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeSearch();
-});
-
-overlay.addEventListener('click', e => {
-  if (e.target === overlay) closeSearch();
-});
-
-document.addEventListener('keydown', e => {
-  if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
-    e.preventDefault();
-    input.focus();
+  function closeSearch() {
+    overlay.hidden = true;
+    overlay.innerHTML = '';
+    input.value = '';
   }
-});
+
+  input.addEventListener('input', e => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => renderResults(e.target.value), 200);
+  });
+
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeSearch();
+  });
+
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) closeSearch();
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault();
+      input.focus();
+    }
+    if (e.key === 'Escape') closeSearch();
+  });
+}
 </script>
 
 <style is:global>
-/* Search overlay styles */
+/* Search overlay — square, hairline, mono, same as everything else. */
 .sr-box {
   background: var(--color-background);
   border: 1px solid var(--color-border);
-  border-radius: 16px;
-  width: min(600px, 92vw);
-  max-height: 70vh;
+  width: min(640px, 100%);
+  max-height: 72vh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 24px 64px -16px rgba(0,0,0,0.2);
 }
 
 .sr-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 1.25rem;
+  gap: 12px;
+  padding: 12px 16px;
   border-bottom: 1px solid var(--color-border);
-  font-size: 13px;
-  color: var(--color-text-offset);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
 }
-
-.sr-query strong { color: var(--color-text); }
 
 .sr-close {
   background: none;
-  border: none;
+  border: 1px solid var(--color-border);
   cursor: pointer;
-  color: var(--color-text-offset);
-  font-size: 16px;
-  padding: 2px 6px;
-  border-radius: 6px;
-  transition: background 0.15s, color 0.15s;
+  color: var(--color-text-muted);
+  font-size: 11px;
+  line-height: 1;
+  padding: 4px 7px;
+  transition: background 0.15s ease, color 0.15s ease;
 }
-.sr-close:hover { background: var(--color-background-offset); color: var(--color-text); }
 
-.sr-list { list-style: none; overflow-y: auto; }
+.sr-close:hover {
+  background: var(--color-invert-bg);
+  color: var(--color-invert-text);
+}
 
-.sr-item { border-bottom: 1px solid var(--color-border); }
-.sr-item:last-child { border-bottom: none; }
+.sr-list {
+  list-style: none;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+}
+
+.sr-item {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.sr-item:last-child {
+  border-bottom: none;
+}
 
 .sr-link {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: 12px;
-  padding: 0.875rem 1.25rem;
-  text-decoration: none;
-  transition: background 0.15s;
+  gap: 14px;
+  padding: 14px 16px;
+  transition: background 0.15s ease, color 0.15s ease;
 }
-.sr-link:hover { background: var(--color-background-offset); }
 
-.sr-thumb {
-  width: 56px; height: 42px;
-  object-fit: cover;
-  border-radius: 8px;
-  flex-shrink: 0;
+.sr-link:hover {
+  background: var(--color-invert-bg);
+  color: var(--color-invert-text);
 }
-.sr-thumb-placeholder {
-  width: 56px; height: 42px;
-  border-radius: 8px;
-  background: color-mix(in srgb, var(--color-primary) 12%, var(--color-background-offset));
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.25rem; font-weight: 700;
-  color: var(--color-primary); flex-shrink: 0;
+
+.sr-index {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--color-text-muted);
 }
 
 .sr-text {
-  display: flex; flex-direction: column; gap: 2px; min-width: 0;
-}
-.sr-cat {
-  font-size: 10px; font-weight: 600; letter-spacing: 0.06em;
-  text-transform: uppercase; color: var(--color-primary);
-}
-.sr-title {
-  font-size: 14px; font-weight: 600; color: var(--color-text);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.sr-desc {
-  font-size: 12px; color: var(--color-text-offset);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
 }
 
-.sr-empty { padding: 2rem; text-align: center; color: var(--color-text-offset); font-size: 14px; }
+.sr-cat {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.sr-title {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sr-desc {
+  font-size: 12px;
+  color: var(--color-text-offset);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sr-link:hover .sr-desc {
+  color: color-mix(in srgb, var(--color-invert-text) 70%, transparent);
+}
+
+.sr-arrow {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.sr-empty {
+  padding: 2rem 16px;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
 </style>
