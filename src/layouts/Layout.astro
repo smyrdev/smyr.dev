@@ -1,6 +1,7 @@
 ---
 import Header from '../components/layouts/Header.astro';
 import Footer from '../components/layouts/Footer.astro';
+import Crosshair from '../components/common/Crosshair.astro';
 import { basic } from '../config/cv.json';
 
 import '../styles/index.css';
@@ -60,6 +61,7 @@ const pageDescription = description ?? basic.summary;
 	</head>
 	<body class="h-full overflow-x-hidden">
 		<div class="page-shell">
+			<Crosshair />
 			<Header />
 			<main>
 				<slot />
