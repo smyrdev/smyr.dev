@@ -53,7 +53,8 @@
         { "name": "Blog", "link": "/blog" },
         { "name": "Works", "link": "/works" },
         { "name": "About", "link": "/about" },
-        { "name": "Now", "link": "/now" }
+        { "name": "Now", "link": "/now" },
+        { "name": "Contact", "link": "/contact" }
     ],
     "footerItems": [
         { "name": "Blog", "link": "/blog" },
