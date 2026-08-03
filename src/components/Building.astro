@@ -1,0 +1,62 @@
+---
+import { getCollection } from 'astro:content';
+import SectionHead from './SectionHead.astro';
+
+interface Props {
+  number: string;
+}
+
+const { number } = Astro.props;
+
+const works = (await getCollection('works'))
+  .filter(work => work.data.featured)
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 3);
+
+// The frontmatter says "open source"; the label column has 84px.
+const labels: Record<string, string> = { 'open source': 'oss' };
+---
+
+{works.length > 0 && (
+  <section class="section">
+    <SectionHead number={number} title="building" />
+
+    <ul class="list">
+      {works.map(work => (
+        <li class="row">
+          <span class="meta">{labels[work.data.type] ?? work.data.type}</span>
+          <span class="entry">
+            {work.data.href ? (
+              <a
+                href={work.data.href}
+                class="link-underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >{work.data.title}</a>
+            ) : (
+              <span>{work.data.title}</span>
+            )}
+            <span class="blurb"> — {work.data.blurb}</span>
+          </span>
+        </li>
+      ))}
+    </ul>
+  </section>
+)}
+
+<style>
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.entry {
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.blurb {
+  color: var(--muted);
+}
+</style>

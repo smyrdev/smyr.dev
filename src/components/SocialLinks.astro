@@ -1,0 +1,54 @@
+---
+import { basic, socialLinks } from '../config/cv.json';
+
+// Inlined rather than pulled from src/icons so `currentColor` cascades from
+// the link — that is what drives the muted → accent hover with no extra CSS.
+const links = [
+  ...socialLinks,
+  { name: 'Email', icon: 'mail', link: `mailto:${basic.email}` },
+];
+---
+
+<div class="socials">
+  {links.map(social => (
+    <a
+      href={social.link}
+      title={social.name}
+      aria-label={social.name}
+      target={social.icon === 'mail' ? undefined : '_blank'}
+      rel={social.icon === 'mail' ? undefined : 'noopener noreferrer'}
+    >
+      {social.icon === 'github' && (
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.5-2.3 1.2-3.2-.1-.3-.5-1.5.1-3 0 0 1-.3 3.3 1.2.9-.3 1.9-.4 2.9-.4s2 .1 2.9.4C17.4 4.5 18.4 4.8 18.4 4.8c.6 1.5.2 2.7.1 3 .8.9 1.2 1.9 1.2 3.2 0 4.5-2.7 5.5-5.3 5.8.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5z"/></svg>
+      )}
+      {social.icon === 'linkedin' && (
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM2.9 21.5h4.2V9.9H2.9v11.6zM9.6 9.9h4v1.6h.1c.6-1 1.9-1.9 3.7-1.9 3 0 4.4 1.9 4.4 5.3v6.6h-4.2v-6c0-1.5-.5-2.5-1.8-2.5-1.1 0-1.8.7-2 1.4-.1.3-.1.7-.1 1v6.1H9.6V9.9z"/></svg>
+      )}
+      {social.icon === 'x' && (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.2 2.3h3.4l-7.4 8.5 8.7 11.5h-6.8l-5.3-7-6.1 7H1.3l7.7-8.8L.7 2.3h7l5 6.6 5.5-6.6zm-1.2 17.9h1.9L6.1 4.2H4.1L17 20.2z"/></svg>
+      )}
+      {social.icon === 'mail' && (
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="2.5" y="4.8" width="19" height="14.4" rx="2"></rect><path d="M3.2 6.4 12 13l8.8-6.6"></path></svg>
+      )}
+    </a>
+  ))}
+</div>
+
+<style>
+.socials {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 4px;
+}
+
+.socials a {
+  display: inline-flex;
+  color: var(--muted);
+  transition: color 0.15s ease;
+}
+
+.socials a:hover {
+  color: var(--accent);
+}
+</style>

@@ -1,200 +1,143 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import SectionHeader from '../components/common/SectionHeader.astro';
-import ContactBand from '../components/sections/ContactBand.astro';
+import SectionHead from '../components/SectionHead.astro';
+import { basic } from '../config/cv.json';
+import { dotted } from '../lib/format';
 
 // ── Edit this block, not the markup. ──────────────────────────────
 // Bump `updated` whenever you change anything below it.
 const updated = '2026-07-31';
 
-const focus = [
+const work = [
   {
-    number: '01',
-    title: 'working',
+    label: 'working',
     body: `full time software engineer @code-factory (DKB), based in Berlin`,
   },
   {
-    number: '02',
-    title: 'focusing',
+    label: 'focusing',
     body: `next step in my career, and the next thing I want to learn`,
   },
+];
+
+const offScreen = [
+  { label: 'reading', body: `Lean Startup by Eric Ries` },
+  { label: 'learning', body: `Agentic AIs, Startups, Deutsch` },
   {
-    number: '03',
-    title: 'Reading',
-    body: `Lean Startup by Eric Ries`,
-  },
-  {
-    number: '04',
-    title: 'Learning',
-    body: `Agentic AIs, Startups, Deutsch, `,
-  },
-  {
-    number: '05',
-    title: 'workout split',
+    label: 'training',
     body: `5 days of strength training, morning 5ks, 10k steps per day, road to sub 10% bf`,
   },
 ];
 
 const uses = [
-  { label: 'laptop', value: 'lenovo ideapad pro 5' },
-  { label: 'languages', value: 'Java, kotlin, TS, Python' },
-  { label: 'editor', value: 'VS Code' },
-  { label: 'ai', value: 'claude max' },
-  { label: 'notes', value: 'notion' },
+  { label: 'laptop', body: 'lenovo ideapad pro 5' },
+  { label: 'languages', body: 'Java, Kotlin, TS, Python' },
+  { label: 'editor', body: 'VS Code' },
+  { label: 'ai', body: 'claude max' },
+  { label: 'notes', body: 'notion' },
 ];
 // ──────────────────────────────────────────────────────────────────
-
-const updatedLabel = new Date(updated).toLocaleDateString('en-GB', {
-  day: '2-digit', month: 'short', year: 'numeric',
-});
 ---
 
 <Layout
   title="Now"
   description="What Samyar Rahimi is working on, writing and reading at the moment."
 >
-  <SectionHeader
-    number="01"
-    title="Now"
-    size="lg"
-    note={`updated ${updatedLabel}`}
-  />
+  <section class="intro">
+    <div class="heading">
+      <h1 class="page-title">Now</h1>
+      <span class="stamp">updated {dotted(updated)}</span>
+    </div>
 
-  <div class="intro gutter">
-    <p>
+    <p class="prose prose-muted">
       A snapshot of what has my attention at the moment, in the spirit of
-      <a href="https://nownownow.com/about" target="_blank" rel="noopener noreferrer">nownownow.com</a>.
-      If it looks stale, it probably is — the date above is the honest one.
+      <a
+        href="https://nownownow.com/about"
+        class="link-underline"
+        target="_blank"
+        rel="noopener noreferrer"
+      >nownownow.com</a>. If it looks stale, it probably is — the date above
+      is the honest one.
     </p>
-  </div>
+  </section>
 
-  <div class="focus">
-    {focus.map(item => (
-      <article class="focus-row">
-        <div class="focus-head">
-          <span class="focus-number">{item.number} /</span>
-          <h2 class="focus-title">{item.title}</h2>
-        </div>
-        <p class="focus-body">{item.body}</p>
-      </article>
-    ))}
-  </div>
+  <section class="section">
+    <SectionHead number="01" title="work" />
+    <ul class="list">
+      {work.map(item => (
+        <li class="row">
+          <span class="meta">{item.label}</span>
+          <span>{item.body}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
 
-  <SectionHeader number="02" title="Uses" size="sm" note="tools, not endorsements" />
+  <section class="section">
+    <SectionHead number="02" title="off screen" />
+    <ul class="list">
+      {offScreen.map(item => (
+        <li class="row">
+          <span class="meta">{item.label}</span>
+          <span>{item.body}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
 
-  <dl class="uses hairline-grid">
-    {uses.map(item => (
-      <div class="use">
-        <dt>{item.label}</dt>
-        <dd>{item.value}</dd>
-      </div>
-    ))}
-  </dl>
+  <section class="section">
+    <SectionHead number="03" title="uses" />
+    <ul class="list">
+      {uses.map(item => (
+        <li class="row">
+          <span class="meta">{item.label}</span>
+          <span>{item.body}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
 
-  <ContactBand number="03" heading="Working on something similar?" />
+  <p class="closing">
+    Want to talk about one of these? <a
+      href={`mailto:${basic.email}`}
+      class="link-underline"
+    >{basic.email}</a>
+  </p>
 </Layout>
 
 <style>
 .intro {
-  padding-top: 24px;
-  padding-bottom: 24px;
-  border-bottom: 1px solid var(--color-border);
-}
-
-.intro p {
-  font-size: 14px;
-  line-height: 1.8;
-  color: var(--color-text-offset);
-  max-width: 62ch;
-}
-
-.intro a {
-  color: var(--color-primary);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-/* ── Focus rows ── */
-.focus-row {
-  display: grid;
-  grid-template-columns: 200px minmax(0, 1fr);
-  gap: 24px;
-  padding: 26px var(--page-gutter);
-  border-bottom: 1px solid var(--color-border);
-  transition: background 0.15s ease, color 0.15s ease;
-}
-
-.focus-row:hover {
-  background: var(--color-invert-bg);
-  color: var(--color-invert-text);
-}
-
-.focus-head {
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-}
-
-.focus-number {
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  color: var(--color-text-muted);
-}
-
-.focus-title {
-  font-family: var(--font-display);
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  text-transform: uppercase;
-}
-
-.focus-body {
-  font-size: 14px;
-  line-height: 1.8;
-  color: var(--color-text-offset);
-  max-width: 62ch;
-}
-
-.focus-row:hover .focus-body {
-  color: color-mix(in srgb, var(--color-invert-text) 72%, transparent);
-}
-
-.focus-row:hover .focus-number {
-  color: color-mix(in srgb, var(--color-invert-text) 55%, transparent);
-}
-
-/* ── Uses grid ── */
-.uses {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  border-bottom: 1px solid var(--color-border);
-}
-
-.use {
-  background: var(--color-background);
-  padding: 18px var(--page-gutter);
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 16px;
 }
 
-.use dt {
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
+.heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
 }
 
-.use dd {
-  font-size: 13px;
+.stamp {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-size: 16px;
   line-height: 1.6;
 }
 
-@media (max-width: 720px) {
-  .focus-row {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 10px;
-  }
+.closing {
+  font-size: 15.5px;
+  line-height: 1.7;
+  color: var(--muted);
 }
 </style>

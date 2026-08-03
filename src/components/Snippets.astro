@@ -1,0 +1,99 @@
+---
+import { getCollection } from 'astro:content';
+import SectionHead from './SectionHead.astro';
+import { dotted } from '../lib/format';
+
+interface Props {
+  number: string;
+}
+
+const { number } = Astro.props;
+
+const snippets = (await getCollection('snippets'))
+  .sort((a, b) => +new Date(b.data.datetime) - +new Date(a.data.datetime))
+  .slice(0, 4);
+---
+
+{snippets.length > 0 && (
+  <section class="section">
+    <SectionHead number={number} title="snippets" />
+
+    <ul class="list">
+      {snippets.map(snip => (
+        <li class="row">
+          <span class="meta date">{dotted(snip.data.datetime)}</span>
+
+          <div class="body">
+            <p class="quote">
+              <span class="mark">“</span>{snip.data.quote}<span class="mark">”</span>
+            </p>
+
+            <div class="attribution">
+              <span>— {snip.data.source}</span>
+
+              {snip.data.href && (
+                <a
+                  href={snip.data.href}
+                  class="link-quiet thread"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.2 2.3h3.4l-7.4 8.5 8.7 11.5h-6.8l-5.3-7-6.1 7H1.3l7.7-8.8L.7 2.3h7l5 6.6 5.5-6.6zm-1.2 17.9h1.9L6.1 4.2H4.1L17 20.2z"/></svg>
+                  {snip.data.hrefLabel}
+                </a>
+              )}
+            </div>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </section>
+)}
+
+<style>
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+
+.date {
+  font-size: 12px;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.quote {
+  font-size: 16.5px;
+  line-height: 1.7;
+  letter-spacing: -0.003em;
+  text-wrap: pretty;
+}
+
+/* Mono quote marks so they read as punctuation set by hand rather than
+   as part of the sentence. */
+.mark {
+  font-family: var(--font-mono);
+  color: var(--accent);
+}
+
+.attribution {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+.thread {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+</style>

@@ -1,0 +1,17 @@
+---
+interface Props {
+  /** Two-digit section number, accented. 01, 02, 03 down the page. */
+  number: string;
+  title: string;
+  /** Optional link on the right of the rule, e.g. "all →". */
+  href?: string;
+  label?: string;
+}
+
+const { number, title, href, label } = Astro.props;
+---
+
+<h2 class="section-head">
+  <span><span class="num">{number}</span> / {title}</span>
+  {href && label && <a href={href} class="link-quiet">{label}</a>}
+</h2>

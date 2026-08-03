@@ -9,11 +9,8 @@
         <path class="caret" d="M536 -156L873 -156L873 -64L536 -64Z" />
     </g>
     <style>
-        .glyph { fill: #0B0B0B; }
-        .caret { fill: #2563EB; }
-        @media (prefers-color-scheme: dark) {
-            .glyph { fill: #EFEFED; }
-            .caret { fill: #6E9BFF; }
-        }
+        /* The site is dark only, so the mark is too — no light variant. */
+        .glyph { fill: #EAE8E1; }
+        .caret { fill: #E08A57; }
     </style>
 </svg>

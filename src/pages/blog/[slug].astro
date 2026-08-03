@@ -1,262 +1,117 @@
 ---
-import { getCollection } from 'astro:content';
-import { render } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
-import ContactBand from '../../components/sections/ContactBand.astro';
+import { dotted } from '../../lib/format';
+
+const slugOf = (id: string) => id.replace(/\.mdx?$/, '');
 
 export const getStaticPaths = async () => {
-    const blog = await getCollection('blog');
-    return blog.map(item => {
-        const cleanSlug = item.id.replace(/\.mdx?$/, '');
+    const sorted = (await getCollection('blog'))
+        .sort((a, b) => +new Date(b.data.datetime) - +new Date(a.data.datetime));
 
-        return {
-            params: { slug: cleanSlug },
-            props: { blog: item }
-        };
-    });
-}
+    return sorted.map((item, i) => ({
+        params: { slug: item.id.replace(/\.mdx?$/, '') },
+        // The "next" link walks backwards in time, matching the reading order
+        // of the index above it.
+        props: { blog: item, next: sorted[i + 1] ?? null },
+    }));
+};
 
-type Props = { blog: CollectionEntry<'blog'> }
-const { blog } = Astro.props;
+type Props = {
+  blog: CollectionEntry<'blog'>;
+  next: CollectionEntry<'blog'> | null;
+};
+
+const { blog, next } = Astro.props;
 const { Content } = await render(blog);
-
-const date = new Date(blog.data.datetime).toLocaleDateString('en-GB', {
-  day: '2-digit', month: 'short', year: 'numeric',
-});
-const type = blog.data.type ?? 'Article';
-const timeToRead = blog.data.time_to_read ?? 5;
-const level = blog.data.level ?? 'Beginner';
-const category = blog.data.category ?? 'General';
-const tags = blog.data.tags ?? [];
-
-const slugify = (s: string) => s.toLowerCase().replace(/\s+/g, '-');
 ---
 
 <Layout title={blog.data.title} description={blog.data.description}>
-  <!-- Reading progress -->
-  <div class="progress-bar" id="progress" aria-hidden="true"></div>
-
   <article class="post">
-    <header class="post-header gutter">
-      <div class="header-inner">
-      <a href="/blog" class="back">← all posts</a>
-
-      <div class="chips">
-        <span class="chip">{type}</span>
-        <a href={`/blog/category/${slugify(category)}`} class="chip chip-cat">{category}</a>
-        {tags.map(t => (
-          <a href={`/blog/tag/${slugify(t)}`} class="chip">#{slugify(t)}</a>
-        ))}
+    <header class="post-header">
+      <div class="byline">
+        <time datetime={blog.data.datetime}>{dotted(blog.data.datetime)}</time>
+        <span aria-hidden="true">·</span>
+        <span>{blog.data.time_to_read} min</span>
+        <span aria-hidden="true">·</span>
+        <span class="accent">{blog.data.category.toLowerCase()}</span>
       </div>
 
       <h1 class="post-title">{blog.data.title}</h1>
-
-      {blog.data.description && <p class="post-desc">{blog.data.description}</p>}
-
-      <div class="byline">
-        <time datetime={blog.data.datetime}>{date}</time>
-        <span aria-hidden="true">·</span>
-        <span>{timeToRead} min read</span>
-        <span aria-hidden="true">·</span>
-        <span>{level}</span>
-      </div>
-      </div>
     </header>
 
-    {blog.data.image && (
-      <div class="post-cover">
-        <img src={blog.data.image} alt="" class="cover-img" loading="eager" />
-      </div>
-    )}
+    {/* The Notion sync writes an empty string when a post has no summary. */}
+    {blog.data.description && <p class="lede">{blog.data.description}</p>}
 
-    <div class="post-body gutter">
-      <div id="markdown" class="prose max-w-none">
-        <Content />
-      </div>
-
-      <footer class="post-footer">
-        {tags.length > 0 && (
-          <div class="footer-tags">
-            <span class="footer-label">tagged in</span>
-            <div class="chips">
-              {tags.map(t => (
-                <a href={`/blog/tag/${slugify(t)}`} class="chip">#{slugify(t)}</a>
-              ))}
-            </div>
-          </div>
-        )}
-        <a href="/blog" class="back">← all posts</a>
-      </footer>
+    <div class="article">
+      <Content />
     </div>
   </article>
 
-  <ContactBand number="02" heading="Got a sharper take?" />
+  <nav class="post-nav" aria-label="Post">
+    <a href="/blog" class="link-quiet">← all writing</a>
 
-  <script>
-    // A cover that failed to sync shouldn't leave a broken 420px hole.
-    const cover = document.querySelector<HTMLImageElement>('.post-cover .cover-img');
-
-    if (cover) {
-      const drop = () => cover.closest('.post-cover')?.remove();
-
-      cover.addEventListener('error', drop);
-      if (cover.complete && cover.naturalWidth === 0) drop();
-    }
-
-    const bar = document.getElementById('progress');
-
-    if (bar) {
-      const update = () => {
-        const h = document.documentElement.scrollHeight - window.innerHeight;
-        bar.style.width = h > 0 ? `${Math.min((window.scrollY / h) * 100, 100)}%` : '0%';
-      };
-
-      window.addEventListener('scroll', update, { passive: true });
-      window.addEventListener('resize', update, { passive: true });
-      update();
-    }
-  </script>
+    {next && (
+      <a href={`/blog/${slugOf(next.id)}`} class="link-quiet next">
+        {next.data.title} →
+      </a>
+    )}
+  </nav>
 </Layout>
 
 <style>
-.progress-bar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 2px;
-  width: 0%;
-  background: var(--color-primary);
-  z-index: 1000;
-  transition: width 0.1s linear;
-}
-
-/* ── Header ── */
-/* Border spans the full frame; only the content is held to a measure. */
-.post-header {
-  padding-top: 36px;
-  padding-bottom: 32px;
-  border-bottom: 1px solid var(--color-border);
-}
-
-.header-inner {
+.post {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  max-width: 860px;
+  gap: 28px;
 }
 
-.back {
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
-  transition: color 0.15s ease;
-  width: fit-content;
-}
-
-.back:hover {
-  color: var(--color-primary);
-}
-
-.chips {
+.post-header {
   display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.chip {
-  display: inline-flex;
-  align-items: center;
-  padding: 3px 8px;
-  border: 1px solid var(--color-border);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--color-text-nav);
-  white-space: nowrap;
-  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
-}
-
-a.chip:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-}
-
-.chip-cat {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-}
-
-.post-title {
-  font-family: var(--font-display);
-  font-size: clamp(30px, 5vw, 52px);
-  font-weight: 700;
-  line-height: 1.02;
-  letter-spacing: -0.04em;
-  text-transform: uppercase;
-}
-
-.post-desc {
-  font-size: 15px;
-  line-height: 1.7;
-  color: var(--color-text-offset);
-  max-width: 60ch;
+  flex-direction: column;
+  gap: 14px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--line);
 }
 
 .byline {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  align-items: baseline;
+  gap: 14px;
   flex-wrap: wrap;
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
 }
 
-/* ── Cover ── */
-.post-cover {
-  border-bottom: 1px solid var(--color-border);
+.post-title {
+  font-size: 27px;
+  font-weight: 500;
+  line-height: 1.28;
+  letter-spacing: -0.02em;
+  text-wrap: pretty;
 }
 
-.cover-img {
-  display: block;
-  width: 100%;
-  height: clamp(220px, 34vw, 420px);
-  object-fit: cover;
-  object-position: center;
-  filter: grayscale(1) contrast(1.05);
-}
-
-/* ── Body ── */
-.post-body {
-  padding-top: 40px;
-  padding-bottom: 48px;
-  max-width: 860px;
-}
-
-.post-footer {
+.post-nav {
   display: flex;
-  align-items: flex-end;
+  align-items: baseline;
   justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
-  margin-top: 40px;
-  padding-top: 20px;
-  border-top: 1px solid var(--color-border);
+  gap: 20px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--muted);
 }
 
-.footer-tags {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.footer-label {
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
+/* With only one post there is no next link, and `space-between` would
+   otherwise leave "all writing" centred. */
+.next {
+  margin-left: auto;
+  max-width: 60%;
+  text-align: right;
 }
 </style>

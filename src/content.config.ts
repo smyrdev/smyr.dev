@@ -18,6 +18,10 @@ const blogCollection = defineCollection({
     }),
 });
 
+// Feeds the "building" section on the home page. There are no /works
+// routes any more, so the fields below the fold (role, stack, problem…)
+// go unread — they are kept so a case-study page can be restored without
+// re-authoring the frontmatter.
 const worksCollection = defineCollection({
     loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: "./src/content/works" }),
     schema: z.object({
@@ -45,7 +49,24 @@ const worksCollection = defineCollection({
     }),
 });
 
+// Short quotes on the home page. The quote lives in frontmatter rather
+// than the body: it is rendered as a single paragraph wrapped in accent
+// quote marks, which a rendered markdown body would fight.
+const snippetsCollection = defineCollection({
+    loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: "./src/content/snippets" }),
+    schema: z.object({
+      quote: z.string(),
+      // Where it came from — "note to self", "code review", "on training".
+      source: z.string(),
+      datetime: z.string(),
+      // Optional link out to the thread it was posted in.
+      href: z.string().optional(),
+      hrefLabel: z.string().default('thread →'),
+    }),
+});
+
 export const collections = {
   'blog': blogCollection,
   'works': worksCollection,
+  'snippets': snippetsCollection,
 };

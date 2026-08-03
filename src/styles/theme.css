@@ -1,102 +1,60 @@
 /* ───────────────────────────────────────────────────────────────
-   smyr.dev design tokens — "Technical · blog-first"
+   smyr.dev — "Minimal"
 
-   Archivo for display, JetBrains Mono for everything else.
-   Near-monochrome on a hairline grid with one signal blue.
-   No radii, no shadows, 1px hairlines only.
+   A single 640px column on warm near-black paper. IBM Plex Sans for
+   prose, IBM Plex Mono for anything that is metadata: dates, nav,
+   section numbers, labels. One rust accent, used sparingly.
+
+   Dark only — there is no theme toggle and no light palette.
    ─────────────────────────────────────────────────────────────── */
 
-[data-theme="light"] {
-    --color-primary: oklch(0.55 0.19 258);
-    /* Kept for components that still reference it; the system has one accent. */
-    --color-secondary: oklch(0.55 0.19 258);
-
-    --color-text: #0B0B0B;
-    --color-text-offset: #3E3E39;
-    --color-text-muted: #8A8A84;
-    --color-text-nav: #55554F;
-
-    --color-background: #EFEFED;
-    --color-background-offset: #E6E6E3;
-    --color-border: rgba(11, 11, 11, 0.18);
-
-    /* Full-inversion hover + the contact band */
-    --color-invert-bg: #0B0B0B;
-    --color-invert-text: #EFEFED;
-    --color-invert-accent: oklch(0.75 0.14 258);
-
-    /* Hero panel graph paper + the accent rule running through it */
-    --color-grid: rgba(11, 11, 11, 0.05);
-    --color-accent-line: oklch(0.55 0.19 258 / 0.28);
-    --color-crosshair: oklch(0.55 0.19 258 / 0.35);
-
-    --portrait-filter: grayscale(1) contrast(1.14) brightness(0.93)
-        drop-shadow(-10px 20px 34px rgba(11, 11, 11, 0.16));
-}
-
-[data-theme="dark"] {
-    /* Accent lifted for contrast on the dark ground. */
-    --color-primary: oklch(0.7 0.17 258);
-    --color-secondary: oklch(0.7 0.17 258);
-
-    --color-text: #EFEFED;
-    --color-text-offset: #C2C2BA;
-    --color-text-muted: #78786F;
-    --color-text-nav: #A3A39C;
-
-    --color-background: #0E0E0D;
-    --color-background-offset: #171716;
-    --color-border: rgba(239, 239, 237, 0.16);
-
-    --color-invert-bg: #EFEFED;
-    --color-invert-text: #0B0B0B;
-    --color-invert-accent: oklch(0.55 0.19 258);
-
-    --color-grid: rgba(239, 239, 237, 0.06);
-    --color-accent-line: oklch(0.7 0.17 258 / 0.3);
-    --color-crosshair: oklch(0.7 0.17 258 / 0.4);
-
-    --portrait-filter: grayscale(1) contrast(1.1) brightness(1.02)
-        drop-shadow(-10px 20px 40px rgba(0, 0, 0, 0.55));
-}
-
 :root {
-    --font-display: "Archivo", ui-sans-serif, system-ui, sans-serif;
-    --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    color-scheme: dark;
 
-    /* The design frame. Content sits inside 40px gutters. */
-    --page-max: 1280px;
-    --page-gutter: 40px;
-    /* Width of the numbered vertical rail down the left of the hero. */
-    --rail: 96px;
+    --paper: #121211;
+    --ink: #eae8e1;
+    /* The design file specifies #7E7B73, which measures 4.43:1 against
+       --paper — under the 4.5:1 WCAG AA floor. Two points per channel
+       brings it to 4.56:1 with no perceptible change. Most of the site's
+       secondary text uses this, so it is worth the rounding. */
+    --muted: #807d75;
+    --line: #26251f;
+    --accent: #e08a57;
+
+    --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+    /* Comfortable line length for body copy. */
+    --measure: 46ch;
+    /* Width of the mono label column that every list row hangs off. */
+    --col-meta: 84px;
 }
 
-/* ── Base ────────────────────────────────────────────────────── */
+/* ── Reset ───────────────────────────────────────────────────── */
 
-html,
-body {
-    background-color: var(--color-background);
-    color: var(--color-text);
-    font-family: var(--font-mono);
-    font-size: 14px;
-}
-
-/* Every corner is square. Utilities still win if a radius is ever
-   asked for explicitly, so this is a default and not a lockout. */
 *,
 *::before,
 *::after {
-    border-radius: 0;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
-h1,
-h2,
-h3,
-h4 {
-    font-family: var(--font-display);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: -0.03em;
+html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+img,
+svg,
+video {
+    display: block;
+    max-width: 100%;
+}
+
+ul,
+ol {
+    list-style: none;
 }
 
 a {
@@ -104,74 +62,359 @@ a {
     text-decoration: none;
 }
 
+button {
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: 0;
+    cursor: pointer;
+}
+
+/* ── Layout ──────────────────────────────────────────────────── */
+
+body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 16.5px;
+    line-height: 1.75;
+}
+
+/* The whole site is this column. `min-height` lives here rather than on
+   body so the footer's `margin-top: auto` has slack to push into; that
+   only works with border-box sizing, or the 96px bottom padding would
+   spill past the viewport and give every short page a scrollbar. */
+.wrap {
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 40px 28px 96px;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    gap: 64px;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    gap: 64px;
+    animation: rise 300ms ease both;
+}
+
+.site-footer {
+    margin-top: auto;
+}
+
+/* ── Motion and system ───────────────────────────────────────── */
+
+@keyframes blink {
+    0%,
+    48% {
+        opacity: 1;
+    }
+    52%,
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes rise {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
 ::selection {
-    background: var(--color-primary);
-    color: #fff;
+    background: var(--accent);
+    color: var(--paper);
 }
 
 :focus-visible {
-    outline: 1px solid var(--color-primary);
+    outline: 1px solid var(--accent);
     outline-offset: 2px;
 }
 
-/* ── Shared primitives ───────────────────────────────────────── */
+/* ── Primitives ──────────────────────────────────────────────── */
 
-/* The 1280px hairline frame every page is built inside. */
-.page-shell {
-    width: 100%;
-    max-width: var(--page-max);
-    margin: 0 auto;
-    border-left: 1px solid var(--color-border);
-    border-right: 1px solid var(--color-border);
+/* A titled block: rule, then rows. */
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
 }
 
-.gutter {
-    padding-left: var(--page-gutter);
-    padding-right: var(--page-gutter);
-}
-
-/* Small uppercase mono meta text — dates, counts, section numbers. */
-.meta {
-    font-size: 10px;
+/* "01 / writing ————————— all →" */
+.section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    font-weight: 400;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--color-text-muted);
+    color: var(--muted);
 }
 
-/* Hairline dividers between grid cells, correct for any row/column count.
-   Each cell draws its own leading edges and overlaps the previous cell by
-   1px, so lines never double up; the outermost edges fall outside the
-   container and are clipped. A short final row simply leaves blank page —
-   no stray fill where a cell would have been. */
-.hairline-grid {
+.section-head .num {
+    color: var(--accent);
+}
+
+/* Mono label column + content. Every list on the site is one of these. */
+.row {
     display: grid;
-    overflow: hidden;
+    grid-template-columns: var(--col-meta) 1fr;
+    gap: 16px;
+    align-items: baseline;
 }
 
-.hairline-grid > * {
-    border-left: 1px solid var(--color-border);
-    border-top: 1px solid var(--color-border);
-    margin-left: -1px;
-    margin-top: -1px;
+/* Grid items default to `min-width: auto`, so an unbroken title would
+   otherwise push the column past 640px. */
+.row > * {
+    min-width: 0;
 }
 
-/* Hover = full inversion, 0.15s. */
-.invert-hover {
-    transition: background 0.15s ease, color 0.15s ease;
+/* Rules between rows rather than around them. */
+.rows > li {
+    border-bottom: 1px solid var(--line);
 }
 
-.invert-hover:hover {
-    background: var(--color-invert-bg);
-    color: var(--color-invert-text);
+.meta {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+}
+
+/* Inline links inside prose: a hairline that warms up on hover. */
+.link-underline {
+    border-bottom: 1px solid var(--line);
+    transition:
+        color 0.15s ease,
+        border-color 0.15s ease;
+}
+
+.link-underline:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+}
+
+/* Nav, footer, "all →" — no rule, just the colour shift. */
+.link-quiet {
+    color: inherit;
+    transition: color 0.15s ease;
+}
+
+.link-quiet:hover {
+    color: var(--accent);
 }
 
 .accent {
-    color: var(--color-primary);
+    color: var(--accent);
 }
 
-@media (max-width: 640px) {
+.prose {
+    max-width: var(--measure);
+    text-wrap: pretty;
+}
+
+.prose-muted {
+    color: var(--muted);
+}
+
+.lede {
+    font-size: 18.5px;
+    line-height: 1.7;
+    letter-spacing: -0.006em;
+    color: var(--muted);
+    text-wrap: pretty;
+}
+
+.page-title {
+    font-size: 19px;
+    font-weight: 500;
+    line-height: 1.55;
+    letter-spacing: -0.01em;
+}
+
+/* ── Post body ───────────────────────────────────────────────── */
+/* Markdown from the Notion sync lands here, so every element the
+   converter can emit needs a rule — not just the ones today's posts use. */
+
+.article {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    font-size: 17px;
+    line-height: 1.78;
+    letter-spacing: -0.003em;
+}
+
+.article > :first-child {
+    margin-top: 0;
+}
+
+.article p {
+    text-wrap: pretty;
+}
+
+/* Headings are mono and quiet — they mark sections rather than shout. */
+.article h1,
+.article h2,
+.article h3,
+.article h4 {
+    margin-top: 10px;
+    font-family: var(--font-mono);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.article h1 {
+    font-size: 15px;
+}
+
+.article h2 {
+    font-size: 14px;
+}
+
+.article h3,
+.article h4 {
+    font-size: 13px;
+    letter-spacing: 0.06em;
+}
+
+.article strong {
+    font-weight: 500;
+    color: var(--ink);
+}
+
+.article em {
+    font-style: italic;
+}
+
+.article a {
+    border-bottom: 1px solid var(--line);
+    transition:
+        color 0.15s ease,
+        border-color 0.15s ease;
+}
+
+.article a:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+}
+
+.article blockquote {
+    padding: 4px 0 4px 20px;
+    border-left: 2px solid var(--accent);
+    color: var(--muted);
+    font-style: italic;
+    text-wrap: pretty;
+}
+
+.article ul,
+.article ol {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-left: 22px;
+}
+
+.article ul {
+    list-style: disc;
+}
+
+.article ol {
+    list-style: decimal;
+}
+
+.article li::marker {
+    color: var(--muted);
+}
+
+.article pre {
+    padding: 18px 20px;
+    background: var(--line);
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: var(--ink);
+}
+
+.article :not(pre) > code {
+    padding: 1px 5px;
+    background: var(--line);
+    font-family: var(--font-mono);
+    font-size: 0.88em;
+}
+
+.article img {
+    width: 100%;
+    border: 1px solid var(--line);
+}
+
+.article hr {
+    border: 0;
+    border-top: 1px solid var(--line);
+}
+
+.article table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.article th,
+.article td {
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    text-align: left;
+}
+
+.article th {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+/* ── Narrow screens ──────────────────────────────────────────── */
+/* Below this the 84px label column starves the content column, so the
+   rows stack instead of squeezing. `--col-meta` and the fallback
+   `grid-template-columns` have to change together. */
+
+@media (max-width: 560px) {
     :root {
-        --page-gutter: 20px;
+        --col-meta: 100%;
+    }
+
+    .wrap {
+        padding: 32px 20px 72px;
+        gap: 48px;
+    }
+
+    main {
+        gap: 48px;
+    }
+
+    .row {
+        grid-template-columns: 1fr;
+        gap: 4px;
     }
 }
 

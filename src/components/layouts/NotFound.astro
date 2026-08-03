@@ -1,118 +1,53 @@
 ---
 import { menuItems } from "../../config/cv.json";
+
+const links = [{ name: "home", link: "/" }, ...menuItems];
 ---
 
 <section class="notfound">
-  <div class="nf-copy gutter">
-    <span class="nf-code">404 / not found</span>
-    <h1 class="nf-title">This page<br />doesn't exist</h1>
-    <p class="nf-body">
-      Either the link is wrong or something moved. Both are my fault, not yours.
-    </p>
+  <span class="code">404 / not found</span>
 
-    <div class="nf-links">
-      <a href="/" class="nf-link">home ↑</a>
-      {menuItems.map(item => (
-        <a href={item.link} class="nf-link">{item.name.toLowerCase()} →</a>
-      ))}
-    </div>
-  </div>
+  <h1 class="page-title">Nothing to see here</h1>
 
-  <div class="nf-grid" aria-hidden="true"></div>
+  <p class="prose prose-muted">
+    Everything that does exist is one of these:
+  </p>
+
+  <ul class="links">
+    {links.map(item => (
+      <li class="row">
+        <span class="meta">{item.name}</span>
+        <a href={item.link} class="link-underline">{item.link}</a>
+      </li>
+    ))}
+  </ul>
 </section>
 
 <style>
 .notfound {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 380px;
-  border-bottom: 1px solid var(--color-border);
-  min-height: 520px;
-}
-
-.nf-copy {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 20px;
-  padding-top: 56px;
-  padding-bottom: 56px;
+  gap: 18px;
 }
 
-.nf-code {
-  font-size: 10px;
-  letter-spacing: 0.14em;
+.code {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--color-primary);
+  color: var(--muted);
 }
 
-.nf-title {
-  font-family: var(--font-display);
-  font-size: clamp(36px, 6vw, 64px);
-  font-weight: 700;
-  line-height: 0.94;
-  letter-spacing: -0.045em;
-  text-transform: uppercase;
-}
-
-.nf-body {
-  font-size: 14px;
-  line-height: 1.75;
-  color: var(--color-text-offset);
-  max-width: 46ch;
-}
-
-.nf-links {
+.links {
   display: flex;
-  border: 1px solid var(--color-border);
-  width: fit-content;
-  max-width: 100%;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 6px;
+  font-family: var(--font-mono);
+  font-size: 13px;
 }
 
-.nf-link {
-  padding: 12px 18px;
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  border-right: 1px solid var(--color-border);
-  transition: background 0.15s ease, color 0.15s ease;
-}
-
-.nf-link:last-child {
-  border-right: none;
-}
-
-.nf-link:hover {
-  background: var(--color-invert-bg);
-  color: var(--color-invert-text);
-}
-
-.nf-grid {
-  border-left: 1px solid var(--color-border);
-  background-image:
-    linear-gradient(var(--color-grid) 1px, transparent 1px),
-    linear-gradient(90deg, var(--color-grid) 1px, transparent 1px);
-  background-size: 40px 40px;
-}
-
-@media (max-width: 900px) {
-  .notfound {
-    grid-template-columns: minmax(0, 1fr);
-    min-height: 0;
-  }
-
-  .nf-grid {
-    display: none;
-  }
-
-  .nf-links {
-    width: 100%;
-  }
-
-  .nf-link {
-    flex: 1 1 auto;
-    text-align: center;
-  }
+.links a {
+  justify-self: start;
 }
 </style>

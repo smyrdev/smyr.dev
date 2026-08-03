@@ -4,60 +4,39 @@ import { basic, footerItems } from "../../config/cv.json";
 const year = new Date().getFullYear();
 ---
 
-<footer class="site-footer gutter">
-  <span class="footer-copy">© {year} {basic.name}</span>
-
+<footer class="site-footer">
   <nav class="footer-nav" aria-label="Footer">
-    {footerItems.map(item => (
-      <a href={item.link} class="footer-link">{item.name}</a>
+    {footerItems.map((item, i) => (
+      <>
+        {i > 0 && <span aria-hidden="true">·</span>}
+        <a href={item.link} class="link-quiet">{item.name}</a>
+      </>
     ))}
+    <span aria-hidden="true">·</span>
+    <a href={`mailto:${basic.email}`} class="link-quiet">email</a>
   </nav>
 
-  <span class="footer-built">built static · astro</span>
+  <span>© {year} · Astro</span>
 </footer>
 
 <style>
 .site-footer {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
-  gap: 16px 24px;
+  gap: 12px 20px;
   flex-wrap: wrap;
-  padding-top: 16px;
-  padding-bottom: 16px;
-  border-top: 1px solid var(--color-border);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
 }
 
 .footer-nav {
   display: flex;
-  gap: 16px;
+  align-items: baseline;
+  gap: 8px;
   flex-wrap: wrap;
-}
-
-.footer-link {
-  transition: color 0.15s ease;
-}
-
-.footer-link:hover {
-  color: var(--color-primary);
-}
-
-@media (max-width: 720px) {
-  .site-footer {
-    justify-content: center;
-    text-align: center;
-    gap: 10px 20px;
-  }
-
-  .footer-nav {
-    order: -1;
-    justify-content: center;
-    width: 100%;
-    padding-bottom: 4px;
-  }
 }
 </style>

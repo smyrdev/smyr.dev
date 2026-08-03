@@ -4,63 +4,39 @@
       "name": "Samyar Rahimi",
       "email": "hello@smyr.dev",
       "role": "Software Engineer & Architect",
-      "headline": ["Software", "engineer &", "architect"],
       "tagline": "I build systems and the products on top of them.",
-      "summary": "I build systems and the products on top of them. Ten years of shipping; most of it spent making architecture explicit, testable, and boring in the good way. I write about it here.",
-      "roles": [
-        { "label": "engineer", "accent": true },
-        { "label": "architect", "accent": true },
-        { "label": "founder", "accent": false }
-      ]
+      "summary": "I build systems and the products on top of them. Ten years of shipping; most of it spent making architecture explicit, testable, and boring in the good way. I write about it here."
     },
     "socialLinks": [
         {
             "name": "GitHub",
             "icon": "github",
-            "link": "https://github.com/smyrdev",
-            "color": "#24292e"
+            "handle": "smyrdev",
+            "link": "https://github.com/smyrdev"
         },
         {
             "name": "LinkedIn",
             "icon": "linkedin",
-            "link": "https://www.linkedin.com/in/samyarahimi/",
-            "color": "#0077b5"
+            "handle": "samyarahimi",
+            "link": "https://www.linkedin.com/in/samyarahimi/"
         },
         {
-            "name": "dev.to",
-            "icon": "devto",
-            "link": "https://dev.to",
-            "color": "#0a0a0a"
-        },
-        {
-            "name": "Hashnode",
-            "icon": "hashnode",
-            "link": "https://hashnode.com",
-            "color": "#2962ff"
-        },
-        {
-            "name": "Medium",
-            "icon": "medium",
-            "link": "https://medium.com",
-            "color": "#00ab6c"
+            "name": "X",
+            "icon": "x",
+            "handle": "smyrdev",
+            "link": "https://x.com/samyrahimi"
         }
     ],
     "syndication": ["dev.to", "hashnode", "medium"],
-    "experiences": [],
-    "education": [],
-    "projects": [],
     "menuItems": [
-        { "name": "Blog", "link": "/blog" },
-        { "name": "Works", "link": "/works" },
-        { "name": "About", "link": "/about" },
-        { "name": "Now", "link": "/now" },
-        { "name": "Contact", "link": "/contact" }
+        { "name": "writing", "link": "/blog" },
+        { "name": "now", "link": "/now" },
+        { "name": "about", "link": "/about" }
     ],
     "footerItems": [
-        { "name": "Blog", "link": "/blog" },
-        { "name": "Works", "link": "/works" },
-        { "name": "About", "link": "/about" },
-        { "name": "Now", "link": "/now" },
-        { "name": "Contact", "link": "/contact" }
+        { "name": "home", "link": "/" },
+        { "name": "writing", "link": "/blog" },
+        { "name": "now", "link": "/now" },
+        { "name": "about", "link": "/about" }
     ]
 }

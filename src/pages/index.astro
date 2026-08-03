@@ -1,15 +1,113 @@
 ---
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
-import Hero from '../components/sections/Hero.astro';
-import LatestPosts from '../components/sections/LatestPosts.astro';
-import WorksStrip from '../components/sections/WorksStrip.astro';
-import ContactBand from '../components/sections/ContactBand.astro';
-import { basic } from '../config/cv.json';
+import SectionHead from '../components/SectionHead.astro';
+import SocialLinks from '../components/SocialLinks.astro';
+import Building from '../components/Building.astro';
+import Snippets from '../components/Snippets.astro';
+import avatar from '../assets/me.png';
+import { basic, syndication } from '../config/cv.json';
+import { dotted } from '../lib/format';
+
+const recent = (await getCollection('blog'))
+  .sort((a, b) => +new Date(b.data.datetime) - +new Date(a.data.datetime))
+  .slice(0, 4);
+
+const slug = (id: string) => id.replace(/\.mdx?$/, '');
 ---
 
 <Layout title={basic.domain} description={basic.summary}>
-  <Hero />
-  <LatestPosts />
-  <WorksStrip />
-  <ContactBand />
+  <section class="intro">
+    <div class="identity">
+      <span class="avatar">
+        <Image src={avatar} alt="" width={88} height={88} loading="eager" />
+      </span>
+      <h1 class="page-title">{basic.name}</h1>
+    </div>
+
+    <p class="prose">{basic.summary}</p>
+
+    <p class="prose prose-muted">
+      Posts are drafted once and syndicated out to {syndication.join(', ')} —
+      this is the source.
+    </p>
+
+    <SocialLinks />
+  </section>
+
+  <section class="section">
+    <SectionHead number="01" title="writing" href="/blog" label="all →" />
+
+    {recent.length > 0 ? (
+      <ul class="rows">
+        {recent.map(post => (
+          <li>
+            <a href={`/blog/${slug(post.id)}`} class="row post">
+              <span class="meta">{dotted(post.data.datetime)}</span>
+              <span class="title">{post.data.title}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="prose prose-muted">Nothing published yet.</p>
+    )}
+  </section>
+
+  <Building number="02" />
+
+  <!-- <Snippets number="03" /> -->
 </Layout>
+
+<style>
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.identity {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* me.png is a square headshot, so the frame is just the whole image
+   clipped. A non-square replacement would need object-position tuning. */
+.avatar {
+  display: block;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--line);
+}
+
+.avatar :global(img) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.post {
+  padding: 14px 0;
+  transition: color 0.15s ease;
+}
+
+.post:hover {
+  color: var(--accent);
+}
+
+/* The date is muted until the row is hovered, then it comes along. */
+.post:hover .meta {
+  color: inherit;
+}
+
+.title {
+  font-size: 16px;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+</style>
