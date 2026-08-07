@@ -1,0 +1,71 @@
+---
+title: exercises-dataset
+blurb: 1,324 exercises with per-muscle training-volume data
+type: open source
+year: '2026'
+order: 1
+featured: true
+href: 'https://github.com/smyrdev/exercises-dataset'
+linkLabel: repo ↗
+role: Author & maintainer
+status: Maintained
+stack:
+  - JSON
+  - JSON Schema
+problem: >-
+  Open exercise datasets stop at names, equipment and a muscle label — enough to
+  list movements, not enough to count sets. Anything that needs weekly
+  per-muscle volume has to hand-build the involvement map first, and hand-built
+  maps are inconsistent across a thousand exercises.
+approach: >-
+  Bin the exercises into 37 movement-pattern profiles and attach one
+  direct/indirect involvement map to each profile, over a shared 22-muscle
+  vocabulary. Classification stays auditable because every exercise on a profile
+  inherits identical volume data, and the direct/indirect split follows the
+  fractional-set convention from Schoenfeld et al. (2019).
+outcome: >-
+  A single JSON file of 1,324 records validating against a draft 2020-12 schema,
+  with instructions in 10 languages and set-volume math available for 1,115 of
+  them. MIT-licensed and ready to drop into workout apps, volume calculators and
+  research projects.
+---
+
+An open fitness dataset built around one question the usual exercise dumps can't
+answer: *how much did that set actually train each muscle?*
+
+## What's in it
+
+- **1,324 exercises**, one JSON file plus a JSON Schema (draft 2020-12) they
+  validate against.
+- **Per-muscle volume** on 1,115 of them (84%) — each muscle marked `1.0`
+  (direct, a prime mover) or `0.5` (indirect synergist), keyed by a 22-muscle
+  vocabulary shared with the `primary_muscle` / `secondary_muscle` labels.
+- **A three-level movement hierarchy**: `body_region` → `movement_group` →
+  `volume_profile`, i.e. 2 regions, 20 groups, 37 patterns.
+- **A category on every record** — `strength` (1,201), `stretch` (69),
+  `cardio` (34), `olympic` (20).
+- **Instructions in 10 languages**, as both full text and ordered steps.
+
+## Why profiles
+
+Volume is attached to the movement pattern, not to the individual exercise. All
+143 biceps-curl variants share one involvement map, so the classification is
+reviewable in 37 decisions rather than 1,115 — and two exercises that are the
+same movement can't quietly disagree about what they train.
+
+The labels and the volume maps answer different questions on purpose:
+`primary_muscle` forces a single winner and is good for browsing; `volume`
+freely marks several muscles direct at once, because a bench press genuinely is
+a direct chest, front-delt *and* triceps movement. Filter on the labels, count
+sets with `volume`.
+
+The 209 exercises left without volume — stretches, cardio, Olympic lifts,
+isometric holds — are excluded deliberately rather than missing.
+
+## Provenance
+
+Names, equipment and the multilingual instructions derive from
+[hasaneyldrm/exercises-dataset](https://github.com/hasaneyldrm/exercises-dataset)
+(MIT); its media files are separately licensed and were removed along with their
+reference fields. The volume system — profiles, involvement maps, hierarchy and
+muscle vocabulary — is this project's addition. Released under MIT.

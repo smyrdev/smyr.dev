@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 220" width="220" height="220" shape-rendering="crispEdges">
+  <clipPath id="r"><rect width="220" height="220" rx="48.4" ry="48.4"></rect></clipPath>
+  <g clip-path="url(#r)">
+    <rect width="220" height="220" fill="#000000"></rect>
+    <rect x="77.5" y="69.375" width="16.25" height="16.25" fill="#B4501E"></rect>
+    <rect x="93.75" y="69.375" width="16.25" height="16.25" fill="#B4501E"></rect>
+    <rect x="110" y="69.375" width="16.25" height="16.25" fill="#B4501E"></rect>
+    <rect x="126.25" y="69.375" width="16.25" height="16.25" fill="#B4501E"></rect>
+    <rect x="61.25" y="85.625" width="16.25" height="16.25" fill="#B4501E"></rect>
+    <rect x="77.5" y="85.625" width="16.25" height="16.25" fill="#B4501E"></rect>
+    <rect x="77.5" y="101.875" width="16.25" height="16.25" fill="#B4501E"></rect>
+    <rect x="93.75" y="101.875" width="16.25" height="16.25" fill="#B4501E"></rect>
+    <rect x="110" y="101.875" width="16.25" height="16.25" fill="#B4501E"></rect>
+    <rect x="110" y="118.125" width="16.25" height="16.25" fill="#B4501E"></rect>
+    <rect x="126.25" y="118.125" width="16.25" height="16.25" fill="#B4501E"></rect>
+    <rect x="61.25" y="134.375" width="16.25" height="16.25" fill="#B4501E"></rect>
+    <rect x="77.5" y="134.375" width="16.25" height="16.25" fill="#B4501E"></rect>
+    <rect x="93.75" y="134.375" width="16.25" height="16.25" fill="#B4501E"></rect>
+    <rect x="110" y="134.375" width="16.25" height="16.25" fill="#B4501E"></rect>
+    <rect x="93.75" y="69.375" width="16.25" height="16.25" fill="#3E6B8A"></rect>
+    <rect x="110" y="69.375" width="16.25" height="16.25" fill="#3E6B8A"></rect>
+    <rect x="126.25" y="69.375" width="16.25" height="16.25" fill="#3E6B8A"></rect>
+    <rect x="142.5" y="69.375" width="16.25" height="16.25" fill="#3E6B8A"></rect>
+    <rect x="77.5" y="85.625" width="16.25" height="16.25" fill="#3E6B8A"></rect>
+    <rect x="93.75" y="85.625" width="16.25" height="16.25" fill="#3E6B8A"></rect>
+    <rect x="93.75" y="101.875" width="16.25" height="16.25" fill="#3E6B8A"></rect>
+    <rect x="110" y="101.875" width="16.25" height="16.25" fill="#3E6B8A"></rect>
+    <rect x="126.25" y="101.875" width="16.25" height="16.25" fill="#3E6B8A"></rect>
+    <rect x="126.25" y="118.125" width="16.25" height="16.25" fill="#3E6B8A"></rect>
+    <rect x="142.5" y="118.125" width="16.25" height="16.25" fill="#3E6B8A"></rect>
+    <rect x="77.5" y="134.375" width="16.25" height="16.25" fill="#3E6B8A"></rect>
+    <rect x="93.75" y="134.375" width="16.25" height="16.25" fill="#3E6B8A"></rect>
+    <rect x="110" y="134.375" width="16.25" height="16.25" fill="#3E6B8A"></rect>
+    <rect x="126.25" y="134.375" width="16.25" height="16.25" fill="#3E6B8A"></rect>
+    <rect x="85.625" y="69.375" width="16.25" height="16.25" fill="#FFFFFF"></rect>
+    <rect x="101.875" y="69.375" width="16.25" height="16.25" fill="#FFFFFF"></rect>
+    <rect x="118.125" y="69.375" width="16.25" height="16.25" fill="#FFFFFF"></rect>
+    <rect x="134.375" y="69.375" width="16.25" height="16.25" fill="#FFFFFF"></rect>
+    <rect x="69.375" y="85.625" width="16.25" height="16.25" fill="#FFFFFF"></rect>
+    <rect x="85.625" y="85.625" width="16.25" height="16.25" fill="#FFFFFF"></rect>
+    <rect x="85.625" y="101.875" width="16.25" height="16.25" fill="#FFFFFF"></rect>
+    <rect x="101.875" y="101.875" width="16.25" height="16.25" fill="#FFFFFF"></rect>
+    <rect x="118.125" y="101.875" width="16.25" height="16.25" fill="#FFFFFF"></rect>
+    <rect x="118.125" y="118.125" width="16.25" height="16.25" fill="#FFFFFF"></rect>
+    <rect x="134.375" y="118.125" width="16.25" height="16.25" fill="#FFFFFF"></rect>
+    <rect x="69.375" y="134.375" width="16.25" height="16.25" fill="#FFFFFF"></rect>
+    <rect x="85.625" y="134.375" width="16.25" height="16.25" fill="#FFFFFF"></rect>
+    <rect x="101.875" y="134.375" width="16.25" height="16.25" fill="#FFFFFF"></rect>
+    <rect x="118.125" y="134.375" width="16.25" height="16.25" fill="#FFFFFF"></rect>
+  </g>
+</svg>
