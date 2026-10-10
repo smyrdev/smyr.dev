@@ -11,7 +11,8 @@ dotenv.config();
 
 const NOTION_TOKEN = process.env.NOTION_TOKEN;
 const NOTION_DATABASE_ID = process.env.NOTION_DATABASE_ID;
-const PUBLISH_DOC_STATUS = process.env.PUBLISH_DOC_STATUS;
+// Strip quotes/whitespace that dashboard env editors keep literally
+const PUBLISH_DOC_STATUS = process.env.PUBLISH_DOC_STATUS?.trim().replace(/^["']|["']$/g, '');
 
 if (!NOTION_TOKEN) {
   console.error('Error: NOTION_TOKEN is missing. Add it to your .env file.');
@@ -20,6 +21,11 @@ if (!NOTION_TOKEN) {
 
 if (!NOTION_DATABASE_ID) {
   console.error('Error: NOTION_DATABASE_ID is missing. Add it to your .env file.');
+  process.exit(1);
+}
+
+if (!PUBLISH_DOC_STATUS) {
+  console.error('Error: PUBLISH_DOC_STATUS is missing. Add it to your .env file.');
   process.exit(1);
 }
 
@@ -86,9 +92,15 @@ function getSelectName(properties, candidates, fallback) {
   return property?.select?.name ?? fallback;
 }
 
-function getNumber(properties, candidates, fallback) {
-  const property = getProperty(properties, candidates);
-  return typeof property?.number === 'number' ? property.number : fallback;
+const WORDS_PER_MINUTE = 200;
+
+function getTimeToRead(markdown) {  
+  const text = markdown
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1');
+  const words = text.match(/[\p{L}\p{N}’']+/gu)?.length ?? 0;
+  return Math.max(1, Math.ceil(words / WORDS_PER_MINUTE));
 }
 
 function getTags(properties, candidates) {
@@ -125,6 +137,7 @@ async function fetchAllPages(databaseId) {
 
 async function syncPosts() {
   const pages = await fetchAllPages(DATABASE_ID);
+  let synced = 0;
 
   for (const page of pages) {
     const props = page.properties;
@@ -137,7 +150,6 @@ async function syncPosts() {
     const category = getCategory(props, ['category', 'Category']);
     const type = getSelectName(props, ['type', 'Type'], 'Article');
     const level = getSelectName(props, ['level', 'Level'], 'Beginner');
-    const timeToRead = getNumber(props, ['time_to_read', 'time to read', 'Time to Read'], 5);
     const tags = getTags(props, ['tags', 'Tags']);
     const datetime = getProperty(props, ['datetime', 'Datetime', 'date'])?.date?.start ?? new Date().toISOString();
     const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
@@ -168,6 +180,9 @@ async function syncPosts() {
     // 3. Fetch content blocks and convert
     const mdblocks = await n2m.pageToMarkdown(page.id);
     const mdString = n2m.toMarkdownString(mdblocks);
+    // notion-to-md omits `parent` entirely for a page with no content
+    const body = mdString.parent ?? '';
+    const timeToRead = getTimeToRead(body);
 
     // 4. Construct Astro Frontmatter with clean local relative cover paths
     const frontmatter = `---
@@ -184,12 +199,15 @@ image: "${coverImagePath}"
 
 `;
 
-    const fullContent = frontmatter + mdString.parent;
+    const fullContent = frontmatter + body;
     const outputPath = path.join(POSTS_DIR, `${slug}.mdx`);
     
     fs.writeFileSync(outputPath, fullContent);
     console.log(`Successfully completed build for: ${slug}.mdx`);
+    synced++;
   }
+
+  console.log(`Synced ${synced} of ${pages.length} Notion pages with status "${PUBLISH_DOC_STATUS}".`);
 }
 
 syncPosts();
