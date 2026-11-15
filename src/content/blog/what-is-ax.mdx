@@ -1,0 +1,56 @@
+---
+title: "What is AX?"
+description: "Agent Experience is how well a product works when the user is an AI agent, measured by whether the job got done."
+category: "ai"
+type: "Note"
+time_to_read: 6
+level: "Beginner"
+tags: ["ai","agents","ax"]
+datetime: "2026-11-15"
+image: ""
+---
+
+Paul Graham said "Make something people want." Next up: [make something agents want](https://x.com/samyarahimi/status/2121662105610842513).
+
+I spend a lot of time with coding agents. When they use a product for me, I don't care how nice the UI looks. I care about a simpler question: can the agent discover it, use it, recover from errors, and actually finish the task?
+
+That's Agent Experience, or AX.
+
+UX is the experience of a human using a product. DX is the experience of a developer building on a platform. AX is what happens when the user is an AI agent, usually acting for a human who never opens the dashboard. The human still judges the product. They just judge it by what their agent managed to ship, or failed to.
+
+Mathias Biilmann, CEO of Netlify, [introduced the term in January 2025](https://biilmann.blog/articles/introducing-ax/). He called AX "the holistic experience AI agents will have as the user of a product or platform." Netlify has kept at it, and there's now an [open community at agentexperience.ax](https://agentexperience.ax/) that Netlify helped bring together. I agree with that starting point. I just want the definition to be sharper on the part I keep hitting: did the agent get the job done?
+
+Because most of what vendors can see today is not that.
+
+[Sanity wrote](https://www.sanity.io/engineering/how-to-get-product-feedback-from-agents) that their MCP telemetry showed which tools were called and which ones failed, "but nothing about whether an agent got what it needed, where it got confused, or what was missing." That sentence is the problem. Tool calls and error rates look like usage. They don't tell you if the agent finished, gave up, or quietly took another path.
+
+I keep running into the same gap myself. When my coding agent uses [Langfuse](https://x.com/samyarahimi/status/2121308017127801040) through Skills, the CLI, or MCP, it sometimes struggles, retries, or falls back to the SDK. From the outside, those retries can look like activity. From my chair, the agent didn't have a good way through, so it found another one. That's an AX failure, even if the charts are green.
+
+This is already a large share of traffic for some platforms. In [June 2026, Stripe wrote](https://stripe.com/blog/stripe-projects-adds-new-agents-providers-developer-controls) that agents sent 70% of its CLI requests for API resources, and nearly 40% of its docs traffic. Those numbers are from Stripe, not from me. They also don't say how they told agent traffic apart from human traffic, so I'm careful with them. Even so, the direction is hard to ignore. If a large part of your "users" are agents, you need a definition of quality that matches how they work.
+
+Agents don't meet your product in one place. They might hit any of these:
+
+- docs
+- the API
+- the CLI
+- an MCP server
+- auth
+- the web UI, if they have to drive a browser because nothing else is usable
+
+If one surface is messy, the agent retries, invents a workaround, or stops. Sometimes it never opens the thing you spent months writing.
+
+[Tom Johnson](https://idratherbewriting.com/blog/improvement-feedback-loop-docs), a tech writer on Google Maps docs, looked at AI app-builder sessions and found that in most of them the agent never consulted the docs at all. It built from memory, or picked another library. You can have beautiful documentation and still have bad AX, because the agent never read it. And when agents do follow the docs, the docs can still point them at the exact thing that fails. A [helpdesk vendor wrote a post-mortem](https://dev.to/linknpark/our-api-docs-told-ai-agents-to-do-the-exact-thing-that-fails-4o4g) about an API that returned ticket IDs as numbers, then rejected the next call unless those IDs were strings. The docs had taught agents a workflow that didn't work.
+
+The CLI is the surface I think about the most, because [agents don't want your UI](https://x.com/samyarahimi/status/2121662105610842513). They want clear errors, readable docs, and a command they can run without a prompt in the way. [Nx](https://nx.dev/blog/making-nx-agent-ready) took that seriously. When their CLI detects that an agent is the caller, commands like `nx import` switch to JSON-formatted messages for progress, missing inputs, errors, and next steps, instead of interactive prompts. That's a real AX design choice: detect the agent, and speak in a form it can parse.
+
+But "just add JSON" is not automatically the answer. [Microsoft's DevAX work](https://microsoft.github.io/agent-experience/) measured what actually happened when they changed CLIs and docs. In the setups they measured, letting agents pass CLI arguments as one JSON payload made tasks 4 to 11 times more expensive, and correctness did not go up. Claude Haiku 4.5 went from 5 of 5 successful deployments with regular arguments to 2 of 5 in JSON mode. Structured JSON output, on a different change, helped: configuration checks on an SPFx upgrade went from 72 to 85 of 85. Same broad idea, opposite results. Microsoft DevRel has been measuring coding agents against Azure and other products [since fall 2025](https://developer.microsoft.com/blog/introducing-the-agent-experience-ax-practitioner-playbook/). The useful lesson is not "JSON is good" or "JSON is bad." It's that AX is an outcome you measure, not a feature you ship and assume will work.
+
+There's also a part of AX that starts after the agent is already in. [Sterling Chin at Inngest](https://www.inngest.com/blog/after-the-agent-signs-in) put it well: getting access, context, and tools right is the front door. The hard part is what happens mid-task, when step 14 of a 20-step workflow fails and the agent's state disappears. If the agent can sign in, call a tool, and still not finish, you don't have good AX. You have a demo.
+
+And if the only door left is the human UI, you often can't even see what the agent was trying to do. I've [asked this about browser-use agents](https://x.com/samyarahimi/status/2120877693881438340) driving a product through the web interface, where there's no schema to read. That's still AX. It's just AX you can't measure from an API log.
+
+So here's the definition I'm using.
+
+Agent Experience is how well a product works when the user is an AI agent. Can the agent discover the product, use it, recover from errors, and actually finish the task? You measure AX by whether the job got done, not by tool calls, page views, or traffic share.
+
+I'm not trying to invent a new category. Biilmann already named it. I want to get clearer about what good looks like, and how you can tell from the outside. That's what I'm researching now: how products behave when the caller is an agent, where those sessions break, and what you would have to change so the agent can finish without me sitting in the middle.
