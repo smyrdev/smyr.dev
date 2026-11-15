@@ -4,5 +4,5 @@ quote: >-
   hurry.
 source: note to self
 datetime: '2026-05-24'
-href: 'https://x.com/smyrdev'
+href: 'https://x.com/samyrahimi'
 ---
