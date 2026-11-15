@@ -27,7 +27,6 @@
             "link": "https://x.com/samyrahimi"
         }
     ],
-    "syndication": ["dev.to", "hashnode", "medium"],
     "menuItems": [
         { "name": "writing", "link": "/blog" },
         { "name": "now", "link": "/now" },
