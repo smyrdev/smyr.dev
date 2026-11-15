@@ -4,5 +4,5 @@ quote: >-
   change.
 source: ten years in
 datetime: '2026-07-02'
-href: 'https://x.com/smyrdev'
+href: 'https://x.com/samyrahimi'
 ---
