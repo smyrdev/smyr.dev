@@ -1,7 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import SectionHead from '../components/SectionHead.astro';
-import { basic, socialLinks, syndication } from '../config/cv.json';
+import { basic, socialLinks } from '../config/cv.json';
 
 const principles = [
   {
@@ -63,9 +63,7 @@ const elsewhere = [
     </p>
 
     <p class="prose prose-muted">
-      I write about all of it here. Posts are drafted once and syndicated out
-      to {syndication.join(', ')}, but this is the source. My fitness life
-      lives at <a
+      I write about all of it here. My fitness life lives at <a
         href="https://samy.fit"
         class="link-underline"
         target="_blank"
